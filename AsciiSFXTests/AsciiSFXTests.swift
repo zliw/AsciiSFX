@@ -19,10 +19,27 @@ class AsciiSFXTests: XCTestCase {
         assert(index == 4)
     }
 
-    func testParseInteger2() {
+    func testParseIntegerWithEmptyString() {
         let chars = Array("".characters)
         let (value, index) = parser.parseInteger(chars)
         assert(value == 0)
+        assert(index == 0)
+    }
+
+    func testParseHexSequence() {
+        let chars = Array("05a".characters)
+        let (sequence, index) = parser.parseHexSequence(chars)
+        assert(sequence.count == 3)
+        assert(index == 3)
+        assert(sequence[0] == 0)
+        assert(sequence[1] == 5)
+        assert(sequence[2] == 10)
+    }
+
+    func testParseHexSequenceWithEmptyString() {
+        let chars = Array("".characters)
+        let (sequence, index) = parser.parseHexSequence(chars)
+        assert(sequence.count == 0)
         assert(index == 0)
     }
 
