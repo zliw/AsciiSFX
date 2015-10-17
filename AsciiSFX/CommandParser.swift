@@ -8,12 +8,54 @@
 
 import Foundation
 
+protocol Operation {
+    func setVolumeSequence(sequence:Array<UInt>)
+}
+
+class SinusOscillator:Operation {
+    var length:UInt64 = 1000
+    var offset:UInt64 = 0
+
+    init(length: UInt64) {
+        self.length = length
+    }
+    func setVolumeSequence(sequence:Array<UInt>) {
+    }
+}
+
 class CommandParser {
-    func parseInteger(chars:Array<Character>) -> (Int64, Int) {
+    var operations = Array<Operation>()
+
+    func parseHexSequence(chars:Array<Character>) -> (Array<UInt>, Int) {
+        var sequence = Array<UInt>()
         var index = 0
-        var value:Int64 = 0
+
         while (index < chars.count) {
-            let c:Int64? = Int64(String(chars[index]))
+            //Swift string handling doesn't allow access to a Characters value directy -> convert back to string
+            let tmp = String(chars[index]).unicodeScalars
+            let code:UInt = UInt(tmp[tmp.startIndex].value)
+            switch (code) {
+                case 0x30..<0x39:        // 0 - 9
+                    sequence.append(code - 0x30)
+                    index++
+                    break
+                case 0x61 ..< 0x66:
+                    sequence.append(code - 0x61 + 10)
+                    index++
+                default:
+                    return (sequence, index)
+            }
+        }
+
+        return (sequence, index)
+    }
+
+
+    func parseInteger(chars:Array<Character>) -> (UInt64, Int) {
+        var index = 0
+        var value:UInt64 = 0
+        while (index < chars.count) {
+            let c:UInt64? = UInt64(String(chars[index]))
             if (c == nil) {
                 return (value, index)
             }
@@ -32,16 +74,20 @@ class CommandParser {
             let c = chars[index++]
 
             switch c {
-                case "s":
+                case "S":
                     if (index >= chars.count) {
                         return false
                     }
 
-                    let end = (index + 5 < chars.count) ? index + 5 : chars.count
-                    print (index, chars.count, end)
-                    let (value, length) = parseInteger(Array(chars[index ..< end]))
-                    print(value)
+                    let (length_in_ms, length) = parseInteger(Array(chars[index ..< chars.count]))
 
+                    self.operations.append(SinusOscillator(length: length_in_ms))
+
+                    index += length
+                    continue
+                case "V":
+                    let (sequence, length) = parseHexSequence(Array(chars[index ..< chars.count]))
+                    operations[-1].setVolumeSequence(sequence)
                     index += length
                     continue
                 default:
