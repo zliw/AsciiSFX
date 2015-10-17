@@ -12,6 +12,7 @@
 		5BC4EF121BD254460048E71A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BC4EF111BD254460048E71A /* Assets.xcassets */; };
 		5BC4EF151BD254460048E71A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BC4EF131BD254460048E71A /* Main.storyboard */; };
 		5BC4EF201BD254460048E71A /* AsciiSFXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF1F1BD254460048E71A /* AsciiSFXTests.swift */; };
+		5BC4EF2B1BD25A3A0048E71A /* CommandParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF2A1BD25A3A0048E71A /* CommandParser.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +35,7 @@
 		5BC4EF1B1BD254460048E71A /* AsciiSFXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsciiSFXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BC4EF1F1BD254460048E71A /* AsciiSFXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsciiSFXTests.swift; sourceTree = "<group>"; };
 		5BC4EF211BD254460048E71A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5BC4EF2A1BD25A3A0048E71A /* CommandParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 				5BC4EF111BD254460048E71A /* Assets.xcassets */,
 				5BC4EF131BD254460048E71A /* Main.storyboard */,
 				5BC4EF161BD254460048E71A /* Info.plist */,
+				5BC4EF2A1BD25A3A0048E71A /* CommandParser.swift */,
 			);
 			path = AsciiSFX;
 			sourceTree = "<group>";
@@ -193,6 +196,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5BC4EF101BD254460048E71A /* ViewController.swift in Sources */,
+				5BC4EF2B1BD25A3A0048E71A /* CommandParser.swift in Sources */,
 				5BC4EF0E1BD254460048E71A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -376,6 +380,7 @@
 				5BC4EF261BD254460048E71A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5BC4EF271BD254460048E71A /* Build configuration list for PBXNativeTarget "AsciiSFXTests" */ = {
 			isa = XCConfigurationList;
@@ -384,6 +389,7 @@
 				5BC4EF291BD254460048E71A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
