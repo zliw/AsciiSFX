@@ -7,9 +7,14 @@
 //
 
 import Foundation
+import AVFoundation
+
+let SampleRate = Float(44100)
+let π = Float(M_PI)
 
 protocol Operation {
     func setVolumeSequence(sequence:Array<UInt>)
+    func render(buffer:AVAudioPCMBuffer) ->Bool
 }
 
 class SinusOscillator:Operation {
@@ -19,14 +24,23 @@ class SinusOscillator:Operation {
     init(length: UInt64) {
         self.length = length
     }
+
     func setVolumeSequence(sequence:Array<UInt>) {
+    }
+    func render(buffer:AVAudioPCMBuffer) -> Bool {
+        var j:Int = 0;
+
+        for (var i = UInt64(0); i < self.length; i++) {
+            buffer.floatChannelData.memory[Int(i)] = 5.0 * sin(Float(j++) * π * 440 / SampleRate)
+        }
+        return false
     }
 }
 
 class CommandParser {
     var operations = Array<Operation>()
 
-    func parseHexSequence(chars:Array<Character>) -> (Array<UInt>, Int) {
+    internal func parseHexSequence(chars:Array<Character>) -> (Array<UInt>, Int) {
         var sequence = Array<UInt>()
         var index = 0
 
@@ -50,8 +64,7 @@ class CommandParser {
         return (sequence, index)
     }
 
-
-    func parseInteger(chars:Array<Character>) -> (UInt64, Int) {
+    internal func parseInteger(chars:Array<Character>) -> (UInt64, Int) {
         var index = 0
         var value:UInt64 = 0
         while (index < chars.count) {
