@@ -27,11 +27,10 @@ class SinusOscillator:Operation {
 
     func setVolumeSequence(sequence:Array<UInt>) {
     }
-    func render(buffer:AVAudioPCMBuffer) -> Bool {
-        var j:Int = 0;
 
-        for (var i = UInt64(0); i < self.length; i++) {
-            buffer.floatChannelData.memory[Int(i)] = 5.0 * sin(Float(j++) * π * 440 / SampleRate)
+    func render(buffer:AVAudioPCMBuffer) -> Bool {
+        for (var i = Int(0); i < Int(self.length * UInt64(SampleRate) / 1000); i++) {
+            buffer.floatChannelData.memory[i] = 5.0 * sin(Float(i++) * π * 440 / SampleRate)
         }
         return false
     }
@@ -39,6 +38,7 @@ class SinusOscillator:Operation {
 
 class CommandParser {
     var operations = Array<Operation>()
+    var frameCount:UInt64 = UInt64(SampleRate)
 
     internal func parseHexSequence(chars:Array<Character>) -> (Array<UInt>, Int) {
         var sequence = Array<UInt>()
@@ -49,11 +49,11 @@ class CommandParser {
             let tmp = String(chars[index]).unicodeScalars
             let code:UInt = UInt(tmp[tmp.startIndex].value)
             switch (code) {
-                case 0x30..<0x39:        // 0 - 9
+                case 0x30 ..< 0x39:         // 0 - 9
                     sequence.append(code - 0x30)
                     index++
                     break
-                case 0x61 ..< 0x66:
+                case 0x61 ..< 0x66:         // a-f
                     sequence.append(code - 0x61 + 10)
                     index++
                 default:
@@ -79,7 +79,6 @@ class CommandParser {
     }
 
     func parse(command:String) -> Bool {
-        print(command)
         let chars = Array(command.characters)
         var index = 0
 
@@ -95,19 +94,28 @@ class CommandParser {
                     let (length_in_ms, length) = parseInteger(Array(chars[index ..< chars.count]))
 
                     self.operations.append(SinusOscillator(length: length_in_ms))
+                    self.frameCount = UInt64(length_in_ms) * UInt64(SampleRate) / 1000
 
                     index += length
                     continue
+
                 case "V":
                     let (sequence, length) = parseHexSequence(Array(chars[index ..< chars.count]))
                     operations[-1].setVolumeSequence(sequence)
                     index += length
                     continue
+
                 default:
                     return false
             }
         }
 
         return true
+    }
+
+    func render(buffer: AVAudioPCMBuffer) {
+        for operation in self.operations {
+            operation.render(buffer)
+        }
     }
 }
