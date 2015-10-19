@@ -32,8 +32,18 @@ class AsciiSFXTests: XCTestCase {
         assert(sequence.count == 3)
         assert(index == 3)
         assert(sequence[0] == 0)
-        assert(sequence[1] == 5)
-        assert(sequence[2] == 10)
+        assert(sequence[1] == Float(5) / 15)
+        assert(sequence[2] == Float(10) / 15)
+    }
+
+    func testParseHexSequence2() {
+        let chars = Array("09f".characters)
+        let (sequence, index) = parser.parseHexSequence(chars)
+        assert(sequence.count == 3)
+        assert(index == 3)
+        assert(sequence[0] == 0)
+        assert(sequence[1] == Float(9) / 15)
+        assert(sequence[2] == Float(1))
     }
 
     func testParseHexSequenceWithEmptyString() {

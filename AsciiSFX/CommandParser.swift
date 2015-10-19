@@ -13,25 +13,42 @@ let SampleRate = Float(44100)
 let π = Float(M_PI)
 
 protocol Operation {
-    func setVolumeSequence(sequence:Array<UInt>)
+    func setVolumeSequence(sequence:Array<Float>)
     func render(buffer:AVAudioPCMBuffer) ->Bool
 }
 
 class SinusOscillator:Operation {
-    var length:UInt64 = 1000
-    var offset:UInt64 = 0
+    private var length:UInt64 = 1000
+    private var offset:UInt64 = 0
+    private var volumeSequence = [Float(1), Float(1)]
 
     init(length: UInt64) {
         self.length = length
     }
 
-    func setVolumeSequence(sequence:Array<UInt>) {
+    func setVolumeSequence(sequence:Array<Float>) {
+        self.volumeSequence = sequence
     }
 
     func render(buffer:AVAudioPCMBuffer) -> Bool {
-        for (var i = Int(0); i < Int(self.length * UInt64(SampleRate) / 1000); i++) {
-            buffer.floatChannelData.memory[i] = 5.0 * sin(Float(i++) * π * 440 / SampleRate)
+        let sampleCount = Int(self.length * UInt64(SampleRate) / 1000)
+        let partitionCount = sampleCount / (volumeSequence.count - 1)
+        var volumeIndex = 0
+
+        var i = Int(0)
+
+        while (volumeIndex < volumeSequence.count - 1) {
+            let current = Float(volumeSequence[volumeIndex])
+            let diff = Float(volumeSequence[volumeIndex + 1]) - current
+
+            for (var j = Int(0); j < partitionCount; j++) {
+                let volume = current + Float(j) * diff / Float(partitionCount)
+                buffer.floatChannelData.memory[j + i] = volume * sin(Float(i + j) * π * 440 / SampleRate)
+            }
+            i += partitionCount
+            volumeIndex++
         }
+
         return false
     }
 }
@@ -40,8 +57,8 @@ class CommandParser {
     var operations = Array<Operation>()
     var frameCount:UInt64 = UInt64(SampleRate)
 
-    internal func parseHexSequence(chars:Array<Character>) -> (Array<UInt>, Int) {
-        var sequence = Array<UInt>()
+    internal func parseHexSequence(chars:Array<Character>) -> (Array<Float>, Int) {
+        var sequence = Array<Float>()
         var index = 0
 
         while (index < chars.count) {
@@ -49,12 +66,12 @@ class CommandParser {
             let tmp = String(chars[index]).unicodeScalars
             let code:UInt = UInt(tmp[tmp.startIndex].value)
             switch (code) {
-                case 0x30 ..< 0x39:         // 0 - 9
-                    sequence.append(code - 0x30)
+                case 0x30 ..< 0x40:         // 0 - 9
+                    sequence.append(Float(code - 0x30) / 15)
                     index++
                     break
-                case 0x61 ..< 0x66:         // a-f
-                    sequence.append(code - 0x61 + 10)
+                case 0x61 ..< 0x67:         // a-f
+                    sequence.append(Float(code - 0x61 + 10) / 15)
                     index++
                 default:
                     return (sequence, index)
@@ -100,8 +117,11 @@ class CommandParser {
                     continue
 
                 case "V":
+                    if (operations.count == 0) {
+                        return false
+                    }
                     let (sequence, length) = parseHexSequence(Array(chars[index ..< chars.count]))
-                    operations[-1].setVolumeSequence(sequence)
+                    operations.last!.setVolumeSequence(sequence)
                     index += length
                     continue
 
