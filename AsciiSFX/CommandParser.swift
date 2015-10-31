@@ -12,8 +12,15 @@ import AVFoundation
 let SampleRate = Float(44100)
 let π = Float(M_PI)
 
+struct Tone {
+    var note:Character;
+    var octave:UInt8;
+    var length:UInt8;
+}
+
 protocol Operation {
     func setVolumeSequence(sequence:Array<Float>)
+    func setToneSequence(sequence:Array<Tone>)
     func render(buffer:AVAudioPCMBuffer) ->Bool
 }
 
@@ -21,6 +28,7 @@ class SinusOscillator:Operation {
     private var length:UInt64 = 1000
     private var offset:UInt64 = 0
     private var volumeSequence = [Float(1), Float(1)]
+    private var toneSequence = Array<Tone>()
 
     init(length: UInt64) {
         self.length = length
@@ -28,6 +36,10 @@ class SinusOscillator:Operation {
 
     func setVolumeSequence(sequence:Array<Float>) {
         self.volumeSequence = sequence
+    }
+
+    func setToneSequence(sequence:Array<Tone>) {
+        self.toneSequence = sequence
     }
 
     func render(buffer:AVAudioPCMBuffer) -> Bool {
@@ -65,6 +77,7 @@ class CommandParser {
             //Swift string handling doesn't allow access to a Characters value directy -> convert back to string
             let tmp = String(chars[index]).unicodeScalars
             let code:UInt = UInt(tmp[tmp.startIndex].value)
+
             switch (code) {
                 case 0x30 ..< 0x40:         // 0 - 9
                     sequence.append(Float(code - 0x30) / 15)
@@ -76,6 +89,73 @@ class CommandParser {
                 default:
                     return (sequence, index)
             }
+        }
+
+        return (sequence, index)
+    }
+
+    internal func parseToneSequence(chars:Array<Character>) -> (Array<Tone>, Int) {
+        var sequence = Array<Tone>()
+        var index = 0
+        var octave = UInt8(4)
+        var tone: Tone?
+
+        while (index < chars.count) {
+            //Swift string handling doesn't allow access to a Characters value directy -> convert back to string
+            let tmp = String(chars[index]).unicodeScalars
+            let code:UInt = UInt(tmp[tmp.startIndex].value)
+
+            switch (code, chars[index]) {
+            case (0x31 ..< 0x40, _) :         // 0 - 9
+                if let _ = tone {
+                    tone!.length = UInt8(code - 0x30)
+                }
+                index++
+                break
+            case (_ , "a" ):
+                fallthrough
+            case (_ , "b" ):
+                fallthrough
+            case (_ , "c" ):
+                fallthrough
+            case (_ , "d" ):
+                fallthrough
+            case (_ , "e" ):
+                fallthrough
+            case (_ , "f" ):
+                fallthrough
+            case (_ , "g" ):
+
+                if let _ = tone {
+                    sequence.append(tone!)
+                }
+
+                tone = Tone(note: chars[index], octave: octave, length: UInt8(1))
+
+                index++
+                break
+            case (_ , "+" ):
+                octave += 1
+
+                index++
+                break
+            case (_ , "-" ):
+                octave -= 1
+
+                index++
+                break
+            default:
+
+                if let _ = tone {
+                    sequence.append(tone!)
+                }
+
+                return (sequence, index)
+            }
+        }
+
+        if let _ = tone {
+            sequence.append(tone!)
         }
 
         return (sequence, index)
@@ -116,11 +196,20 @@ class CommandParser {
                     index += length
                     continue
 
+                case "T":
+                    let (sequence, length) = parseToneSequence(Array(chars[index ..< chars.count]))
+                    operations.last!.setToneSequence(sequence)
+
+                    index += length
+                    continue
+
                 case "V":
                     if (operations.count == 0) {
                         return false
                     }
+
                     let (sequence, length) = parseHexSequence(Array(chars[index ..< chars.count]))
+
                     operations.last!.setVolumeSequence(sequence)
                     index += length
                     continue

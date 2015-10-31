@@ -53,5 +53,29 @@ class AsciiSFXTests: XCTestCase {
         assert(index == 0)
     }
 
+    func testToneSequence() {
+        let chars = Array("+d-d2ec".characters)
+        let (sequence, index) = parser.parseToneSequence(chars)
+        assert(sequence.count == 4)
+        assert(index == 7)
+
+        assert(sequence[0].note == Character("d"))
+        assert(sequence[0].octave == 5)
+        assert(sequence[0].length == 1)
+
+        assert(sequence[1].note == Character("d"))
+        assert(sequence[1].octave == 4)
+        assert(sequence[1].length == 2)
+
+        assert(sequence[2].note == Character("e"))
+        assert(sequence[2].octave == 4)
+        assert(sequence[2].length == 1)
+
+        assert(sequence[3].note == Character("c"))
+        assert(sequence[3].octave == 4)
+        assert(sequence[3].length == 1)
+    }
+
+
 
 }
