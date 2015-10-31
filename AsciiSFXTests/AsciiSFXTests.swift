@@ -76,6 +76,16 @@ class AsciiSFXTests: XCTestCase {
         assert(sequence[3].length == 1)
     }
 
+    func testFrequency() {
+        let tone = Tone(note: "a", octave: 4, length: 1)
+        assert(tone.frequency() == 440)
+
+        let tone2 = Tone(note: "a", octave: 5, length: 1)
+        assert(tone2.frequency() == 880)
+
+        let tone3 = Tone(note: "a", octave: 3, length: 1)
+        assert(tone3.frequency() == 220)
+    }
 
 
 }
