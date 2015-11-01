@@ -34,6 +34,7 @@ class SinusOscillator:BufferOperation {
     func setVolumeSequence(sequence:Array<Float>) {
         self.volumeSequence = sequence
         self.renderVolumes()
+        self.renderFrequencies()
     }
 
     func lengthOfSections(totalLength:UInt32, sequence: Array<Tone>) -> Array<UInt32> {
@@ -45,6 +46,10 @@ class SinusOscillator:BufferOperation {
     func lengthOfSections(totalLength:UInt32, sequence: Array<UInt32>) -> Array<UInt32> {
         var sectionLength = Array<UInt32>()
         var sectionCount:UInt32 = 0
+
+        if (sequence.count == 0) {
+            return Array<UInt32>()
+        }
 
         for (var i = Int(0); i < sequence.count; i++) {
             sectionCount += sequence[i]
@@ -107,6 +112,7 @@ class SinusOscillator:BufferOperation {
     func setToneSequence(sequence:Array<Tone>) {
         self.toneSequence = sequence
 
+        self.renderVolumes()
         self.renderFrequencies()
     }
 
