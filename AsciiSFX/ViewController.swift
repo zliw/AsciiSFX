@@ -31,34 +31,70 @@ class ViewController: NSViewController {
         }
     }
 
-    @IBAction func play(sender:NSObject?) {
+    @IBAction func save(sender:NSObject?) {
+        if (!parse()) {
+            let alert = NSAlert()
+            alert.messageText = "parsing failed"
+            alert.runModal()
+            return
+        }
+
+        let url = NSURL(fileURLWithPath: "/tmp/out.wav");
+        let format = self.player.outputFormatForBus(0)
+
+        do {
+            let file = try AVAudioFile(forWriting: url, settings: [AVFormatIDKey : NSNumber(unsignedInt: kAudioFormatLinearPCM),
+                AVNumberOfChannelsKey : NSNumber(unsignedInt:format.channelCount),
+                AVSampleRateKey : NSNumber(double:format.sampleRate),
+                AVLinearPCMIsFloatKey: NSNumber(unsignedInt: 1)
+                ])
+            let buffer = AVAudioPCMBuffer(PCMFormat: format,
+                frameCapacity:AVAudioFrameCount(self.parser.frameCount))
+            buffer.frameLength = AVAudioFrameCount(self.parser.frameCount)
+
+            self.parser.render(buffer)
+
+            try file.writeFromBuffer(buffer)
+        }
+        catch let error as NSError {
+            let alert = NSAlert(error: error)
+            alert.runModal()
+        }
+    }
+
+    func parse() -> Bool {
         let command = textField?.stringValue
         if ((command != nil && command?.lengthOfBytesUsingEncoding(NSASCIIStringEncoding) > 0)) {
-            let valid = parser.parse(command!)
-            if (valid) {
-                self.playButton?.enabled = false
+            return parser.parse(command!)
+        }
 
-                let queue = NSOperationQueue()
+        return false
+    }
 
-                queue.addOperationWithBlock({
-                    print("rendering")
-                    let buffer = AVAudioPCMBuffer(PCMFormat: self.player.outputFormatForBus(0),
-                                              frameCapacity:AVAudioFrameCount(self.parser.frameCount))
-                    buffer.frameLength = AVAudioFrameCount(self.parser.frameCount)
+    @IBAction func play(sender:NSObject?) {
+        if (parse()) {
+            self.playButton?.enabled = false
 
-                    self.parser.render(buffer)
+            let queue = NSOperationQueue()
 
-                    print("scheduling")
-                    self.player.scheduleBuffer(buffer,
-                                               atTime:nil,
-                                               options:.InterruptsAtLoop,
-                                               completionHandler: {
-                        self.playButton?.enabled = true
-                        print("playing stopped")
-                    })
+            queue.addOperationWithBlock({
+                print("rendering")
+                let buffer = AVAudioPCMBuffer(PCMFormat: self.player.outputFormatForBus(0),
+                                          frameCapacity:AVAudioFrameCount(self.parser.frameCount))
+                buffer.frameLength = AVAudioFrameCount(self.parser.frameCount)
+
+                self.parser.render(buffer)
+
+                print("scheduling")
+                self.player.scheduleBuffer(buffer,
+                                           atTime:nil,
+                                           options:.InterruptsAtLoop,
+                                           completionHandler: {
+                    self.playButton?.enabled = true
+                    print("playing stopped")
                 })
-                player.play()
-            }
+            })
+            player.play()
         }
     }
 }

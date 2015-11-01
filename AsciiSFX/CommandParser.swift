@@ -29,7 +29,6 @@ struct Tone {
     let octave:UInt8;
     var length:UInt8;
 
-
     func frequency() -> Float {
 
         var o:Int16 = Int16(self.octave) - Int16(4)
@@ -86,7 +85,10 @@ class SinusOscillator:Operation {
 
             for (var j = Int(0); j < partitionCount; j++) {
                 let volume = current + Float(j) * diff / Float(partitionCount)
-                buffer.floatChannelData.memory[j + i] = volume * sin(Float(i + j) * π * 440 / SampleRate)
+                let value = volume * sin(Float(i + j) * 2 * π * 440 / SampleRate)
+                buffer.floatChannelData.memory[j + i] = value
+                // second channel
+                buffer.floatChannelData.memory[sampleCount + j + i] = value
             }
             i += partitionCount
             volumeIndex++
