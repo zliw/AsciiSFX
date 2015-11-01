@@ -39,7 +39,7 @@ class ViewController: NSViewController {
             return
         }
 
-        let url = NSURL(fileURLWithPath: "/tmp/out.mp4");
+        let url = NSURL(fileURLWithPath: "/tmp/out.wav");
         let format = self.player.outputFormatForBus(0)
 
         do {

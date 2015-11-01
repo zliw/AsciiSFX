@@ -95,5 +95,21 @@ class AsciiSFXTests: XCTestCase {
         assert(tone3.frequency() == 220)
     }
 
+    func testLengthOfSections() {
+        let o = SinusOscillator(length: 10)
+        let t1 = Tone(note:"a", octave: 5, length: 1)
+
+        var a = Array<Tone>()
+        a.append(t1)
+        a.append(t1)
+        a.append(t1)
+
+        let result = o.lengthOfSections(10, sequence: a)
+        assert(result.count == 3)
+        assert(result[0] == 4)
+        assert(result[1] == 3)
+        assert(result[2] == 3)
+    }
+
 
 }
