@@ -2,8 +2,8 @@
 //  ViewController.swift
 //  AsciiSFX
 //
-//  Created by martin on 17/10/15.
-//  Copyright © 2015 martin. All rights reserved.
+//  Created by  Martin Wilz on 17/10/15.
+//  Copyright © 2015  Martin Wilz. All rights reserved.
 //
 
 import Cocoa
@@ -39,7 +39,7 @@ class ViewController: NSViewController {
             return
         }
 
-        let url = NSURL(fileURLWithPath: "/tmp/out.wav");
+        let url = NSURL(fileURLWithPath: "/tmp/out.mp4");
         let format = self.player.outputFormatForBus(0)
 
         do {

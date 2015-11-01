@@ -2,104 +2,14 @@
 //  CommandParser.swift
 //  AsciiSFX
 //
-//  Created by martin on 17/10/15.
-//  Copyright © 2015 martin. All rights reserved.
+//  Created by Martin Wilz on 17/10/15.
+//  Copyright © 2015  Martin Wilz. All rights reserved.
 //
 
-import Foundation
 import AVFoundation
 
-let SampleRate = Float(44100)
-let π = Float(M_PI)
-
-struct FrequencyTable {
-    static let table:Dictionary<Character, Float> = [
-        Character("c"):  261.63,
-        Character("d"):  293.66,
-        Character("e"):  329.63,
-        Character("f"):  349.23,
-        Character("g"):  392.00,
-        Character("a"):  440.00,
-        Character("b"):  493.88
-    ]
-}
-
-struct Tone {
-    let note:Character;
-    let octave:UInt8;
-    var length:UInt8;
-
-    func frequency() -> Float {
-
-        var o:Int16 = Int16(self.octave) - Int16(4)
-        var f = FrequencyTable.table[self.note]!
-
-        while (o < 0) {
-            f /= 2
-            o++
-        }
-
-        while (o > 0) {
-            f *= 2
-            o--
-        }
-
-        return f
-    }
-}
-
-protocol Operation {
-    func setVolumeSequence(sequence:Array<Float>)
-    func setToneSequence(sequence:Array<Tone>)
-    func render(buffer:AVAudioPCMBuffer) ->Bool
-}
-
-class SinusOscillator:Operation {
-    private var length:UInt64 = 1000
-    private var offset:UInt64 = 0
-    private var volumeSequence = [Float(1), Float(1)]
-    private var toneSequence = Array<Tone>()
-
-    init(length: UInt64) {
-        self.length = length
-    }
-
-    func setVolumeSequence(sequence:Array<Float>) {
-        self.volumeSequence = sequence
-    }
-
-    func setToneSequence(sequence:Array<Tone>) {
-        self.toneSequence = sequence
-    }
-
-    func render(buffer:AVAudioPCMBuffer) -> Bool {
-        let sampleCount = Int(self.length * UInt64(SampleRate) / 1000)
-        let partitionCount = sampleCount / (volumeSequence.count - 1)
-        var volumeIndex = 0
-
-        var i = Int(0)
-
-        while (volumeIndex < volumeSequence.count - 1) {
-            let current = Float(volumeSequence[volumeIndex])
-            let diff = Float(volumeSequence[volumeIndex + 1]) - current
-
-            for (var j = Int(0); j < partitionCount; j++) {
-                let volume = current + Float(j) * diff / Float(partitionCount)
-                let value = volume * sin(Float(i + j) * 2 * π * 440 / SampleRate)
-                buffer.floatChannelData.memory[j + i] = value
-                // second channel
-                buffer.floatChannelData.memory[sampleCount + j + i] = value
-            }
-            i += partitionCount
-            volumeIndex++
-        }
-
-        return false
-    }
-}
-
 class CommandParser {
-    var operations = Array<Operation>()
+    var operations = Array<BufferOperation>()
     var frameCount:UInt64 = UInt64(SampleRate)
 
     internal func parseHexSequence(chars:Array<Character>) -> (Array<Float>, Int) {
