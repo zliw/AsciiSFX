@@ -9,6 +9,7 @@
 import AVFoundation
 
 let SampleRate = Float(44100)
+let fadeSampleCount = UInt32(220)   // 5ms
 let π = Float(M_PI)
 
 
@@ -92,6 +93,54 @@ class SinusOscillator:BufferOperation {
         }
     }
 
+    private func resetVolume() {
+        let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
+
+        self.volumes = Array<Float>()
+        for (var i:UInt32 = 0; i < sampleCount; i++) {
+            self.volumes.append(Float(1))
+        }
+    }
+
+    private func renderFadeIn(wantedStart:UInt32) {
+        let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
+
+        if (UInt32(self.volumes.count) != sampleCount) {
+            resetVolume()
+        }
+
+        if (wantedStart >= sampleCount) {
+            return
+        }
+
+        let start:Int = Int(wantedStart)
+        let count:Int = (wantedStart + fadeSampleCount < sampleCount) ? Int(fadeSampleCount) : Int(sampleCount - wantedStart)
+
+        for (var i = 0; i < count; i++) {
+            self.volumes[start +  i] *= (Float(i) / Float(count))
+        }
+    }
+
+    private func renderFadeOut(wantedStart:UInt32) {
+        let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
+
+        if (UInt32(self.volumes.count) != sampleCount) {
+            resetVolume()
+        }
+
+        let start:Int = wantedStart > fadeSampleCount ? Int(wantedStart - fadeSampleCount) : 0
+        var count:Int = wantedStart > fadeSampleCount ? Int(fadeSampleCount) : Int(start)
+
+        if (UInt32(start + count) > sampleCount) {
+            count = Int(sampleCount - UInt32(start))
+        }
+
+        for (var i = 0; i < count; i++) {
+            self.volumes[start +  i] *= Float(1) - (Float(i) / Float(count))
+        }
+
+    }
+
     private func renderFrequencies() {
         let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
 
@@ -102,6 +151,9 @@ class SinusOscillator:BufferOperation {
         for (var i = 0; i < sectionLength.count; i++) {
             let length = sectionLength[i]
             let frequency = self.toneSequence[i].frequency()
+
+            renderFadeIn(UInt32(frequencies.count))
+            renderFadeOut(UInt32(frequencies.count) + length)
 
             for (var j:UInt32 = 0; j < length; j++) {
                 frequencies.append(frequency)
@@ -129,11 +181,23 @@ class SinusOscillator:BufferOperation {
         }
         else {
             // fallback -> static frequency of 440hz
-            for (var i = Int(0); i < sampleCount; i++) {
-                let value = volumes[i] * sin(Float(i) * 2 * π * 440 / SampleRate)
-                buffer.floatChannelData.memory[i] = value
-                // second channel
-                buffer.floatChannelData.memory[sampleCount + i] = value
+
+            if (self.volumes.count == sampleCount) {
+                for (var i = Int(0); i < sampleCount; i++) {
+                    let value = volumes[i] * sin(Float(i) * 2 * π * 440 / SampleRate)
+                    buffer.floatChannelData.memory[i] = value
+                    // second channel
+                    buffer.floatChannelData.memory[sampleCount + i] = value
+                }
+            }
+            else {
+                // fallback -> fixed volume
+                for (var i = Int(0); i < sampleCount; i++) {
+                    let value = sin(Float(i) * 2 * π * 440 / SampleRate)
+                    buffer.floatChannelData.memory[i] = value
+                    // second channel
+                    buffer.floatChannelData.memory[sampleCount + i] = value
+                }
             }
         }
 
