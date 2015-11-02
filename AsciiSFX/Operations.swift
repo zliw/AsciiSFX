@@ -116,10 +116,6 @@ class SinusOscillator:BufferOperation {
     private func renderFadeIn(wantedStart:UInt32) {
         let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
 
-        if (self.volumeBuffer?.frameLength < sampleCount) {
-            resetVolume()
-        }
-
         if (wantedStart >= sampleCount) {
             return
         }
@@ -135,10 +131,6 @@ class SinusOscillator:BufferOperation {
     private func renderFadeOut(wantedStart:UInt32) {
         let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
 
-        if (self.volumeBuffer?.frameLength < sampleCount) {
-            resetVolume()
-        }
-
         let start:Int = wantedStart > fadeSampleCount ? Int(wantedStart - fadeSampleCount) : 0
         var count:Int = wantedStart > fadeSampleCount ? Int(fadeSampleCount) : Int(start)
 
@@ -149,13 +141,16 @@ class SinusOscillator:BufferOperation {
         for (var i = 0; i < count; i++) {
             self.volumeBuffer?.floatChannelData.memory[start +  i] *= Float(1) - (Float(i) / Float(count))
         }
-
     }
 
     private func renderFrequencies() {
         let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
 
         self.frequencyBuffer = getBuffer()
+
+        if (self.volumeBuffer == nil || self.volumeBuffer?.frameCapacity < sampleCount) {
+            resetVolume()
+        }
 
         let sectionLength = lengthOfSections(sampleCount, sequence: self.toneSequence)
 
@@ -182,6 +177,14 @@ class SinusOscillator:BufferOperation {
 
     func render(buffer:AVAudioPCMBuffer) -> Bool {
         let sampleCount = Int(self.length * UInt64(SampleRate) / 1000)
+
+        if (buffer.format.channelCount != 2) {
+            return false;
+        }
+
+        if (Int(buffer.frameCapacity) < sampleCount) {
+            return false;
+        }
 
         if (self.frequencyBuffer != nil) {
             for (var i = Int(0); i < sampleCount; i++) {
