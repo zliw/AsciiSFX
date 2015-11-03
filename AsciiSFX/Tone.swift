@@ -21,14 +21,21 @@ struct FrequencyTable {
 }
 
 struct Tone {
-    let note:Character;
-    let octave:UInt8;
-    var length:UInt8;
+    let note:Character
+    let octave:UInt8
+    var length:UInt8
+    var toNote:Character?
+    var toOctave:UInt8?
 
-    func frequency() -> Float {
+    init(note:Character, octave: UInt8, length: UInt8) {
+        self.note = note
+        self.octave = octave
+        self.length = length
+    }
 
-        var o:Int16 = Int16(self.octave) - Int16(4)
-        var f = FrequencyTable.table[self.note]!
+    private func _frequency(octave:UInt8, note:Character) -> Float {
+        var o:Int16 = Int16(octave) - Int16(4)
+        var f = FrequencyTable.table[note]!
 
         while (o < 0) {
             f /= 2
@@ -42,4 +49,18 @@ struct Tone {
         
         return f
     }
+
+    func frequency() -> Float {
+        return _frequency(self.octave, note: self.note)
+    }
+
+    func toFrequency() -> Float {
+        if let _ = self.toOctave {
+            if let _ = self.toNote {
+                return _frequency(toOctave!, note: toNote!)
+            }
+        }
+        return _frequency(self.octave, note: self.note)
+    }
+
 }

@@ -42,11 +42,13 @@ class CommandParser {
         var index = 0
         var octave = UInt8(4)
         var tone: Tone?
+        var slide = false
 
         while (index < chars.count) {
             //Swift string handling doesn't allow access to a Characters value directy -> convert back to string
             let tmp = String(chars[index]).unicodeScalars
             let code:UInt = UInt(tmp[tmp.startIndex].value)
+
 
             switch (code, chars[index]) {
             case (0x31 ..< 0x40, _) :         // 0 - 9
@@ -55,34 +57,47 @@ class CommandParser {
                 }
                 index++
                 break
-            case (_ , "a" ):
+            case (_, "/"):
+                slide = true
+                index++
+                break
+            case (_, "a"):
                 fallthrough
-            case (_ , "b" ):
+            case (_, "b"):
                 fallthrough
-            case (_ , "c" ):
+            case (_ , "c"):
                 fallthrough
-            case (_ , "d" ):
+            case (_ , "d"):
                 fallthrough
-            case (_ , "e" ):
+            case (_ , "e"):
                 fallthrough
-            case (_ , "f" ):
+            case (_ , "f"):
                 fallthrough
-            case (_ , "g" ):
+            case (_ , "g"):
 
                 if let _ = tone {
-                    sequence.append(tone!)
+                    if (slide) {
+                        tone!.toNote = chars[index]
+                        tone!.toOctave = octave
+                        slide = false
+                        index++
+                        break
+                    }
+                    else {
+                        sequence.append(tone!)
+                    }
                 }
 
                 tone = Tone(note: chars[index], octave: octave, length: UInt8(1))
 
                 index++
                 break
-            case (_ , "+" ):
+            case (_ , "+"):
                 octave += 1
 
                 index++
                 break
-            case (_ , "-" ):
+            case (_ , "-"):
                 octave -= 1
 
                 index++

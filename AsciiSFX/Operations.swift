@@ -157,13 +157,17 @@ class SinusOscillator:BufferOperation {
         var counter = 0
         for (var i = 0; i < sectionLength.count; i++) {
             let length = sectionLength[i]
-            let frequency = self.toneSequence[i].frequency()
+            let start = self.toneSequence[i].frequency()
+            let end = self.toneSequence[i].toFrequency()
+            let diff = end - start
+
+            print(start, end, diff)
 
             renderFadeIn(UInt32(counter))
             renderFadeOut(UInt32(counter) + length)
 
             for (var j:UInt32 = 0; j < length; j++) {
-                frequencyBuffer?.floatChannelData.memory[counter++] = frequency
+                frequencyBuffer?.floatChannelData.memory[counter++] = start + (diff * Float(j) / Float(length))
             }
         }
     }
@@ -188,7 +192,7 @@ class SinusOscillator:BufferOperation {
 
         if (self.frequencyBuffer != nil) {
             for (var i = Int(0); i < sampleCount; i++) {
-                let value = (volumeBuffer?.floatChannelData.memory[i])! * sin(Float(i) * 2 * π * (self.frequencyBuffer?.floatChannelData.memory[i])! / SampleRate)
+                let value = (volumeBuffer?.floatChannelData.memory[i])! * sin(Float(i) / SampleRate * 2 * π * (self.frequencyBuffer?.floatChannelData.memory[i])! )
                 buffer.floatChannelData.memory[i] = value
                 // second channel
                 buffer.floatChannelData.memory[sampleCount + i] = value
