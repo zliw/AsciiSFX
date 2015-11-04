@@ -191,8 +191,12 @@ class SinusOscillator:BufferOperation {
         }
 
         if (self.frequencyBuffer != nil) {
+            var phase:Float = 0.0
+
             for (var i = Int(0); i < sampleCount; i++) {
-                let value = (volumeBuffer?.floatChannelData.memory[i])! * sin(Float(i) / SampleRate * 2 * π * (self.frequencyBuffer?.floatChannelData.memory[i])! )
+                let freq = (self.frequencyBuffer?.floatChannelData.memory[i])!
+                phase += 2 * π * freq / SampleRate
+                let value = (volumeBuffer?.floatChannelData.memory[i])! * sin(phase)
                 buffer.floatChannelData.memory[i] = value
                 // second channel
                 buffer.floatChannelData.memory[sampleCount + i] = value

@@ -93,12 +93,12 @@ class CommandParser {
                 index++
                 break
             case (_ , "+"):
-                octave += 1
+                octave += (octave <= 8) ? 1 : 0
 
                 index++
                 break
             case (_ , "-"):
-                octave -= 1
+                octave -= (octave >= 1) ? 1 : 0
 
                 index++
                 break
