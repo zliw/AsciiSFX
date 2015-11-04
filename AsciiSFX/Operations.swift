@@ -10,41 +10,55 @@ import AVFoundation
 
 let SampleRate = Float(44100)
 let fadeSampleCount = UInt32(220)   // 5ms
-let π = Float(M_PI)
 
 
 protocol BufferOperation {
+    var length:UInt64 { get }
     func setVolumeSequence(sequence:Array<Float>)
     func setToneSequence(sequence:Array<Tone>)
     func render(buffer:AVAudioPCMBuffer) ->Bool
 }
 
-class SinusOscillator:BufferOperation {
-    private var length:UInt64 = 1000
+
+class WavetableOscillator:BufferOperation {
+    var length:UInt64
     private var offset:UInt64 = 0
     private var volumeSequence = [Float(1), Float(1)]
     private var toneSequence = Array<Tone>()
 
-    private var frequencyBuffer:AVAudioPCMBuffer?
-    private var volumeBuffer:AVAudioPCMBuffer?
+    private var frequencyBuffer: AVAudioPCMBuffer?
+    private var volumeBuffer: AVAudioPCMBuffer?
+    private var wavetableBuffer: AVAudioPCMBuffer?
+    private var wavetableLength: Int = 0
 
     init(length: UInt64) {
         self.length = length
     }
 
-    // create a buffer with oscillations length of float samples
+    // creates a buffer according to length and samplerate
     private func getBuffer() -> AVAudioPCMBuffer {
         let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
 
         return AVAudioPCMBuffer(PCMFormat: AVAudioFormat(standardFormatWithSampleRate: Double(SampleRate), channels: 1),
-                                frameCapacity:AVAudioFrameCount(sampleCount))
+            frameCapacity:AVAudioFrameCount(sampleCount))
 
+    }
+
+    // create a buffer with oscillations length of float samples
+    private func allocateWaveTable(sampleCount: UInt32) -> AVAudioPCMBuffer {
+        wavetableLength = Int(sampleCount)
+        return AVAudioPCMBuffer(PCMFormat: AVAudioFormat(standardFormatWithSampleRate: Double(SampleRate), channels: 1),
+            frameCapacity:AVAudioFrameCount(sampleCount))
     }
 
     func setVolumeSequence(sequence:Array<Float>) {
         self.volumeSequence = sequence
         self.renderVolumes()
-        self.renderFrequencies()
+
+        // if there already is a frequencyBuffer, rerender it for fadein/out matches
+        if let _ = frequencyBuffer {
+            self.renderFrequencies()
+        }
     }
 
     func lengthOfSections(totalLength:UInt32, sequence: Array<Tone>) -> Array<UInt32> {
@@ -89,8 +103,8 @@ class SinusOscillator:BufferOperation {
         self.volumeBuffer = getBuffer()
 
         let sectionLength = lengthOfSections(sampleCount, sequence: self.volumeSequence.map({ (volume) -> UInt32 in
-                UInt32(1)
-            }))
+            UInt32(1)
+        }))
 
         var counter = 0;
         for (var i = 0; i < sectionLength.count; i++) {
@@ -182,6 +196,10 @@ class SinusOscillator:BufferOperation {
     func render(buffer:AVAudioPCMBuffer) -> Bool {
         let sampleCount = Int(self.length * UInt64(SampleRate) / 1000)
 
+        if (wavetableLength == 0) {
+            return false;
+        }
+
         if (buffer.format.channelCount != 2) {
             return false;
         }
@@ -190,40 +208,58 @@ class SinusOscillator:BufferOperation {
             return false;
         }
 
-        if (self.frequencyBuffer != nil) {
+        let periodLength = Float(wavetableLength)
+        let wavetable = wavetableBuffer!.floatChannelData.memory
+
+        if let _ = frequencyBuffer {
+            let frequency = frequencyBuffer!.floatChannelData.memory
+            let volume = volumeBuffer!.floatChannelData.memory
             var phase:Float = 0.0
 
             for (var i = Int(0); i < sampleCount; i++) {
-                let freq = (self.frequencyBuffer?.floatChannelData.memory[i])!
-                phase += 2 * π * freq / SampleRate
-                let value = (volumeBuffer?.floatChannelData.memory[i])! * sin(phase)
+                let freq = frequency[i]
+                phase += periodLength * freq / SampleRate
+                let value = volume[i] * wavetable[Int(phase) % wavetableLength]
+                buffer.floatChannelData.memory[i] = value
+                // second channel
+                buffer.floatChannelData.memory[sampleCount + i] = value
+            }
+        }
+        else if let _ = volumeBuffer {
+            // fallback, fixed frequency of 440hz, using volume
+            let volume = volumeBuffer!.floatChannelData.memory
+            for (var i = Int(0); i < sampleCount; i++) {
+                let value = (volume[i]) * wavetable[Int(Float(i) * periodLength * 440 / SampleRate) % wavetableLength]
                 buffer.floatChannelData.memory[i] = value
                 // second channel
                 buffer.floatChannelData.memory[sampleCount + i] = value
             }
         }
         else {
-            // fallback -> static frequency of 440hz
-
-            if (self.volumeBuffer != nil) {
-                for (var i = Int(0); i < sampleCount; i++) {
-                    let value = (self.volumeBuffer?.floatChannelData.memory[i])! * sin(Float(i) * 2 * π * 440 / SampleRate)
-                    buffer.floatChannelData.memory[i] = value
-                    // second channel
-                    buffer.floatChannelData.memory[sampleCount + i] = value
-                }
-            }
-            else {
-                // fallback -> fixed volume
-                for (var i = Int(0); i < sampleCount; i++) {
-                    let value = sin(Float(i) * 2 * π * 440 / SampleRate)
-                    buffer.floatChannelData.memory[i] = value
-                    // second channel
-                    buffer.floatChannelData.memory[sampleCount + i] = value
-                }
+            // fallback -> fixed volume
+            for (var i = Int(0); i < sampleCount; i++) {
+                let value = wavetable[Int(Float(i) * periodLength * 440 / SampleRate) % wavetableLength]
+                buffer.floatChannelData.memory[i] = value
+                // second channel
+                buffer.floatChannelData.memory[sampleCount + i] = value
             }
         }
 
         return false
     }
+}
+
+class SinusOscillator:WavetableOscillator {
+
+    override init(length: UInt64) {
+        super.init(length: length)
+
+        let length = 4096
+        wavetableBuffer = allocateWaveTable(UInt32(length))
+
+        for (var i:Int = 0; i < length; i++) {
+            wavetableBuffer?.floatChannelData.memory[i] = sin(Float(i) * 2 * Float(M_PI) / Float(length))
+        }
+    }
+
 }
