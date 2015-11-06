@@ -261,5 +261,22 @@ class SinusOscillator:WavetableOscillator {
             wavetableBuffer?.floatChannelData.memory[i] = sin(Float(i) * 2 * Float(M_PI) / Float(length))
         }
     }
+}
 
+class SquareOscillator:WavetableOscillator {
+
+    override init(length: UInt64) {
+        super.init(length: length)
+
+        let length = 4096
+        wavetableBuffer = allocateWaveTable(UInt32(length))
+
+        for (var i:Int = 0; i < length / 2; i++) {
+            wavetableBuffer?.floatChannelData.memory[i] = 1
+        }
+
+        for (var i:Int = length / 2; i < length; i++) {
+            wavetableBuffer?.floatChannelData.memory[i] = 0
+        }
+    }
 }

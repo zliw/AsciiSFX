@@ -9,6 +9,14 @@
 import XCTest
 @testable import AsciiSFX
 
+
+struct ObjectHelper {
+    static func getClassName(object: AnyObject) -> String {
+        let objectClass: AnyClass = object_getClass(object) as AnyClass
+        return NSStringFromClass(objectClass)
+    }
+}
+
 class AsciiSFXTests: XCTestCase {
     let parser = CommandParser()
 
@@ -126,5 +134,21 @@ class AsciiSFXTests: XCTestCase {
         assert(result[2] == 3)
     }
 
+    func testParserWithSquareWave() {
+        let parser = CommandParser()
+        parser.parse("SQ1000")
+        assert(parser.frameCount == 44100)
+        assert(parser.operations.count == 1)
+        let operation = parser.operations[0]
+        assert(ObjectHelper.getClassName(operation as! AnyObject) == "AsciiSFX.SquareOscillator")
+    }
 
+    func testParserWithSineWave() {
+        let parser = CommandParser()
+        parser.parse("SI100")
+        assert(parser.frameCount == 4410)
+        assert(parser.operations.count == 1)
+        let operation = parser.operations[0]
+        assert(ObjectHelper.getClassName(operation as! AnyObject) == "AsciiSFX.SinusOscillator")
+    }
 }

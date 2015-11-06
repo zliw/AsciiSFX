@@ -12,14 +12,19 @@ class CommandParser {
     var operations = Array<BufferOperation>()
     var frameCount:UInt64 = UInt64(SampleRate)
 
+
+    internal func getCharCode(char:Character) ->UInt {
+        //Swift string handling doesn't allow access to a Characters value directy -> convert back to string
+        let tmp = String(char).unicodeScalars
+        return UInt(tmp[tmp.startIndex].value)
+    }
+
     internal func parseHexSequence(chars:Array<Character>) -> (Array<Float>, Int) {
         var sequence = Array<Float>()
         var index = 0
 
         while (index < chars.count) {
-            //Swift string handling doesn't allow access to a Characters value directy -> convert back to string
-            let tmp = String(chars[index]).unicodeScalars
-            let code:UInt = UInt(tmp[tmp.startIndex].value)
+            let code = getCharCode(chars[index])
 
             switch (code) {
                 case 0x30 ..< 0x40:         // 0 - 9
@@ -45,10 +50,7 @@ class CommandParser {
         var slide = false
 
         while (index < chars.count) {
-            //Swift string handling doesn't allow access to a Characters value directy -> convert back to string
-            let tmp = String(chars[index]).unicodeScalars
-            let code:UInt = UInt(tmp[tmp.startIndex].value)
-
+            let code = getCharCode(chars[index])
 
             switch (code, chars[index]) {
             case (0x31 ..< 0x40, _) :         // 0 - 9
@@ -142,13 +144,23 @@ class CommandParser {
 
             switch c {
                 case "S":
-                    if (index >= chars.count) {
+                    if (index >= chars.count - 1) {
                         return false
                     }
 
+                    let type = chars[index++]
+
                     let (length_in_ms, length) = parseInteger(Array(chars[index ..< chars.count]))
 
-                    self.operations.append(SinusOscillator(length: length_in_ms))
+                    switch (type) {
+                        case "I":
+                            self.operations.append(SinusOscillator(length: length_in_ms))
+                        case "Q":
+                            self.operations.append(SquareOscillator(length: length_in_ms))
+                        default:
+                            return false
+                    }
+
                     self.frameCount = UInt64(length_in_ms) * UInt64(SampleRate) / 1000
 
                     index += length
