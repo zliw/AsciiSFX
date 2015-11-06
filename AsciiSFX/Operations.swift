@@ -276,7 +276,21 @@ class SquareOscillator:WavetableOscillator {
         }
 
         for (var i:Int = length / 2; i < length; i++) {
-            wavetableBuffer?.floatChannelData.memory[i] = 0
+            wavetableBuffer?.floatChannelData.memory[i] = -1
+        }
+    }
+}
+
+class SawtoothOscillator:WavetableOscillator {
+
+    override init(length: UInt64) {
+        super.init(length: length)
+
+        let length = 4096
+        wavetableBuffer = allocateWaveTable(UInt32(length))
+
+        for (var i:Int = 0; i < length / 2; i++) {
+            wavetableBuffer?.floatChannelData.memory[i] = 2 - 2 * (Float(i) / Float(length))
         }
     }
 }

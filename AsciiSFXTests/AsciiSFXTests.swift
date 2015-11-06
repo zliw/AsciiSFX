@@ -151,4 +151,14 @@ class AsciiSFXTests: XCTestCase {
         let operation = parser.operations[0]
         assert(ObjectHelper.getClassName(operation as! AnyObject) == "AsciiSFX.SinusOscillator")
     }
+
+    func testParserWithSawWave() {
+        let parser = CommandParser()
+        parser.parse("SW100")
+        assert(parser.frameCount == 4410)
+        assert(parser.operations.count == 1)
+        let operation = parser.operations[0]
+        assert(ObjectHelper.getClassName(operation as! AnyObject) == "AsciiSFX.SawtoothOscillator")
+    }
+
 }

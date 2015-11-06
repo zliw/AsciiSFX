@@ -155,10 +155,12 @@ class CommandParser {
                     switch (type) {
                         case "I":
                             self.operations.append(SinusOscillator(length: length_in_ms))
-                        case "Q":
-                            self.operations.append(SquareOscillator(length: length_in_ms))
-                        default:
-                            return false
+                    case "Q":
+                        self.operations.append(SquareOscillator(length: length_in_ms))
+                    case "W":
+                        self.operations.append(SawtoothOscillator(length: length_in_ms))
+                    default:
+                        return false
                     }
 
                     self.frameCount = UInt64(length_in_ms) * UInt64(SampleRate) / 1000
