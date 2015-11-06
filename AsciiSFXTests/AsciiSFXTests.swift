@@ -63,7 +63,7 @@ class AsciiSFXTests: XCTestCase {
 
     func testEmptyToneSequence() {
         let chars = Array("".characters)
-        let (sequence, index) = parser.parseToneSequence(chars)
+        let (sequence, index) = parser.parseNoteSequence(chars)
 
         assert(sequence.count == 0)
         assert(index == 0)
@@ -71,7 +71,7 @@ class AsciiSFXTests: XCTestCase {
 
     func testToneSlide() {
         let chars = Array("d/-e".characters)
-        let (sequence, index) = parser.parseToneSequence(chars)
+        let (sequence, index) = parser.parseNoteSequence(chars)
 
         assert(sequence.count == 1)
         assert(index == 4)
@@ -86,7 +86,7 @@ class AsciiSFXTests: XCTestCase {
 
     func testToneSequence() {
         let chars = Array("+d-d2ec".characters)
-        let (sequence, index) = parser.parseToneSequence(chars)
+        let (sequence, index) = parser.parseNoteSequence(chars)
         assert(sequence.count == 4)
         assert(index == 7)
 
@@ -108,21 +108,21 @@ class AsciiSFXTests: XCTestCase {
     }
 
     func testFrequencyCalculation() {
-        let tone = Tone(note: "a", octave: 4, length: 1)
+        let tone = Note(note: "a", octave: 4, length: 1)
         assert(tone.frequency() == 440)
 
-        let tone2 = Tone(note: "a", octave: 5, length: 1)
+        let tone2 = Note(note: "a", octave: 5, length: 1)
         assert(tone2.frequency() == 880)
 
-        let tone3 = Tone(note: "a", octave: 3, length: 1)
+        let tone3 = Note(note: "a", octave: 3, length: 1)
         assert(tone3.frequency() == 220)
     }
 
     func testLengthOfSections() {
         let o = SinusOscillator(length: 10)
-        let t1 = Tone(note:"a", octave: 5, length: 1)
+        let t1 = Note(note:"a", octave: 5, length: 1)
 
-        var a = Array<Tone>()
+        var a = Array<Note>()
         a.append(t1)
         a.append(t1)
         a.append(t1)

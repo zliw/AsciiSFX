@@ -15,7 +15,7 @@ let fadeSampleCount = UInt32(220)   // 5ms
 protocol BufferOperation {
     var length:UInt64 { get }
     func setVolumeSequence(sequence:Array<Float>)
-    func setToneSequence(sequence:Array<Tone>)
+    func setNoteSequence(sequence:Array<Note>)
     func render(buffer:AVAudioPCMBuffer) ->Bool
 }
 
@@ -24,7 +24,7 @@ class WavetableOscillator:BufferOperation {
     var length:UInt64
     private var offset:UInt64 = 0
     private var volumeSequence = [Float(1), Float(1)]
-    private var toneSequence = Array<Tone>()
+    private var toneSequence = Array<Note>()
 
     private var frequencyBuffer: AVAudioPCMBuffer?
     private var volumeBuffer: AVAudioPCMBuffer?
@@ -61,7 +61,7 @@ class WavetableOscillator:BufferOperation {
         }
     }
 
-    func lengthOfSections(totalLength:UInt32, sequence: Array<Tone>) -> Array<UInt32> {
+    func lengthOfSections(totalLength:UInt32, sequence: Array<Note>) -> Array<UInt32> {
         return lengthOfSections(totalLength, sequence: sequence.map({ (tone) -> UInt32 in
             UInt32(tone.length)
         }))
@@ -186,7 +186,7 @@ class WavetableOscillator:BufferOperation {
         }
     }
 
-    func setToneSequence(sequence:Array<Tone>) {
+    func setNoteSequence(sequence:Array<Note>) {
         self.toneSequence = sequence
 
         self.renderVolumes()

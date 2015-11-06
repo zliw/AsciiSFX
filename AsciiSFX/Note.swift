@@ -20,7 +20,7 @@ struct FrequencyTable {
     ]
 }
 
-struct Tone {
+struct Note {
     let note:Character
     let octave:UInt8
     var length:UInt8

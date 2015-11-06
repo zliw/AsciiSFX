@@ -42,11 +42,11 @@ class CommandParser {
         return (sequence, index)
     }
 
-    internal func parseToneSequence(chars:Array<Character>) -> (Array<Tone>, Int) {
-        var sequence = Array<Tone>()
+    internal func parseNoteSequence(chars:Array<Character>) -> (Array<Note>, Int) {
+        var sequence = Array<Note>()
         var index = 0
         var octave = UInt8(4)
-        var tone: Tone?
+        var note: Note?
         var slide = false
 
         while (index < chars.count) {
@@ -54,8 +54,8 @@ class CommandParser {
 
             switch (code, chars[index]) {
             case (0x31 ..< 0x40, _) :         // 0 - 9
-                if let _ = tone {
-                    tone!.length = UInt8(code - 0x30)
+                if let _ = note {
+                    note!.length = UInt8(code - 0x30)
                 }
                 index++
                 break
@@ -77,20 +77,20 @@ class CommandParser {
                 fallthrough
             case (_ , "g"):
 
-                if let _ = tone {
+                if let _ = note {
                     if (slide) {
-                        tone!.toNote = chars[index]
-                        tone!.toOctave = octave
+                        note!.toNote = chars[index]
+                        note!.toOctave = octave
                         slide = false
                         index++
                         break
                     }
                     else {
-                        sequence.append(tone!)
+                        sequence.append(note!)
                     }
                 }
 
-                tone = Tone(note: chars[index], octave: octave, length: UInt8(1))
+                note = Note(note: chars[index], octave: octave, length: UInt8(1))
 
                 index++
                 break
@@ -106,16 +106,16 @@ class CommandParser {
                 break
             default:
 
-                if let _ = tone {
-                    sequence.append(tone!)
+                if let _ = note {
+                    sequence.append(note!)
                 }
 
                 return (sequence, index)
             }
         }
 
-        if let _ = tone {
-            sequence.append(tone!)
+        if let _ = note {
+            sequence.append(note!)
         }
 
         return (sequence, index)
@@ -169,8 +169,8 @@ class CommandParser {
                     continue
 
                 case "T":
-                    let (sequence, length) = parseToneSequence(Array(chars[index ..< chars.count]))
-                    operations.last!.setToneSequence(sequence)
+                    let (sequence, length) = parseNoteSequence(Array(chars[index ..< chars.count]))
+                    operations.last!.setNoteSequence(sequence)
 
                     index += length
                     continue
