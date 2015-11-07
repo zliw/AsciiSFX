@@ -18,7 +18,7 @@ struct ObjectHelper {
 }
 
 class AsciiSFXTests: XCTestCase {
-    let parser = CommandParser()
+    let parser = Parser()
 
     func testParseInteger() {
         let chars = Array("1000".characters)
@@ -134,7 +134,7 @@ class AsciiSFXTests: XCTestCase {
     }
 
     func testParserWithSquareWave() {
-        let parser = CommandParser()
+        let parser = Parser()
         parser.parse("SQ1000")
         assert(parser.frameCount == 44100)
         assert(parser.operations.count == 1)
@@ -143,7 +143,7 @@ class AsciiSFXTests: XCTestCase {
     }
 
     func testParserWithSineWave() {
-        let parser = CommandParser()
+        let parser = Parser()
         parser.parse("SI100")
         assert(parser.frameCount == 4410)
         assert(parser.operations.count == 1)
@@ -152,7 +152,7 @@ class AsciiSFXTests: XCTestCase {
     }
 
     func testParserWithSawWave() {
-        let parser = CommandParser()
+        let parser = Parser()
         parser.parse("SW100")
         assert(parser.frameCount == 4410)
         assert(parser.operations.count == 1)
