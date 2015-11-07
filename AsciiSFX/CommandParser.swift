@@ -168,7 +168,7 @@ class CommandParser {
                     index += length
                     continue
 
-                case "T":
+                case "N":
                     let (sequence, length) = parseNoteSequence(Array(chars[index ..< chars.count]))
                     operations.last!.setNoteSequence(sequence)
 

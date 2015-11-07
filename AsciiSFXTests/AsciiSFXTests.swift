@@ -119,7 +119,6 @@ class AsciiSFXTests: XCTestCase {
     }
 
     func testLengthOfSections() {
-        let o = SinusOscillator(length: 10)
         let t1 = Note(note:"a", octave: 5, length: 1)
 
         var a = Array<Note>()
@@ -127,7 +126,7 @@ class AsciiSFXTests: XCTestCase {
         a.append(t1)
         a.append(t1)
 
-        let result = o.lengthOfSections(10, sequence: a)
+        let result = Helper().lengthOfSections(10, sequence: a)
         assert(result.count == 3)
         assert(result[0] == 4)
         assert(result[1] == 3)
