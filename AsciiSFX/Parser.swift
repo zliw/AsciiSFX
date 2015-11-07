@@ -156,6 +156,11 @@ class Parser {
 
                     let (length_in_ms, length) = parseInteger(Array(chars[index ..< chars.count]))
 
+                    // limit the length of generated signals to sensible values e.g. 20ms and 60s
+                    if length_in_ms < 20 && length_in_ms > 60000 {
+                        return false
+                    }
+
                     switch (type) {
                         case "I":
                             self.operations.append(SinusOscillator(length: length_in_ms))
