@@ -8,7 +8,7 @@
 
 import AVFoundation
 
-class CommandParser {
+class Parser {
     var operations = Array<BufferOperation>()
     var frameCount:UInt64 = UInt64(SampleRate)
 
@@ -121,15 +121,19 @@ class CommandParser {
         return (sequence, index)
     }
 
-    internal func parseInteger(chars:Array<Character>) -> (UInt64, Int) {
+    internal func parseInteger(chars:Array<Character>) -> (UInt32, Int) {
         var index = 0
-        var value:UInt64 = 0
+        var value:UInt32 = 0
         while (index < chars.count) {
-            let c:UInt64? = UInt64(String(chars[index]))
+            let c:UInt32? = UInt32(String(chars[index]))
             if (c == nil) {
                 return (value, index)
             }
-            value = value * 10 + c!
+
+            if value < UInt32.max / 10 {
+                value = value * 10 + c!
+            }
+
             index++
         }
         return (value, index)

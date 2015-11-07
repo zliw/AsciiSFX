@@ -11,68 +11,13 @@ import AVFoundation
 let SampleRate = Float(44100)
 let fadeSampleCount = UInt32(220)   // 5ms
 
-
-protocol BufferOperation {
-    var length:UInt64 { get }
-    func setVolumeSequence(sequence:Array<Float>)
-    func setNoteSequence(sequence:Array<Note>)
-    func render(buffer:AVAudioPCMBuffer) ->Bool
-}
-
-struct Helper {
-    // creates a buffer according to length and samplerate
-    func getBuffer(length: UInt64) -> AVAudioPCMBuffer {
-        let sampleCount = UInt32(length * UInt64(SampleRate) / 1000)
-
-        return AVAudioPCMBuffer(PCMFormat: AVAudioFormat(standardFormatWithSampleRate: Double(SampleRate), channels: 1),
-            frameCapacity:AVAudioFrameCount(sampleCount))
-        
-    }
-
-    func lengthOfSections(totalLength:UInt32, sequence: Array<Note>) -> Array<UInt32> {
-        return lengthOfSections(totalLength, sequence: sequence.map({ (tone) -> UInt32 in
-            UInt32(tone.length)
-        }))
-    }
-
-    func lengthOfSections(totalLength:UInt32, sequence: Array<UInt32>) -> Array<UInt32> {
-        var sectionLength = Array<UInt32>()
-        var sectionCount:UInt32 = 0
-
-        if (sequence.count == 0) {
-            return Array<UInt32>()
-        }
-
-        for (var i = Int(0); i < sequence.count; i++) {
-            sectionCount += sequence[i]
-        }
-
-        var currentLength:UInt32 = 0;
-
-        for (var i = Int(0); i < sequence.count; i++) {
-            sectionLength.append(UInt32(sequence[i]) * UInt32(totalLength / sectionCount))
-            currentLength += sectionLength[i]
-        }
-
-        //spread rounding error
-        var index = 0
-
-        while (currentLength < totalLength) {
-            sectionLength[index++ % sectionLength.count]++
-            currentLength++
-        }
-
-        return sectionLength
-    }
-}
-
 class VolumeBuffer {
-    private var length:UInt64
+    private var length:UInt32
     var buffer: AVAudioPCMBuffer
     var sequence: Array<Float> = Array<Float>(arrayLiteral: 1.0, 1.0)
     var isEmpty = true
 
-    init(length: UInt64) {
+    init(length: UInt32) {
         self.length = length
         self.buffer = Helper().getBuffer(length)
     }
@@ -82,7 +27,7 @@ class VolumeBuffer {
     }
 
     func render() {
-        let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
+        let sampleCount = UInt32(self.length * UInt32(SampleRate) / 1000)
 
         self.buffer = Helper().getBuffer(self.length)
 
@@ -103,7 +48,7 @@ class VolumeBuffer {
     }
 
     func reset() {
-        let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
+        let sampleCount = UInt32(self.length * UInt32(SampleRate) / 1000)
 
         self.buffer = Helper().getBuffer(self.length)
 
@@ -114,7 +59,7 @@ class VolumeBuffer {
     }
 
     func fadeIn(wantedStart:UInt32) {
-        let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
+        let sampleCount = UInt32(self.length * UInt32(SampleRate) / 1000)
 
         if (wantedStart >= sampleCount) {
             return
@@ -130,7 +75,7 @@ class VolumeBuffer {
     }
 
     func fadeOut(wantedStart:UInt32) {
-        let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
+        let sampleCount = UInt32(self.length * UInt32(SampleRate) / 1000)
 
         let start:Int = wantedStart > fadeSampleCount ? Int(wantedStart - fadeSampleCount) : 0
         var count:Int = wantedStart > fadeSampleCount ? Int(fadeSampleCount) : Int(start)
@@ -148,7 +93,7 @@ class VolumeBuffer {
 }
 
 class WavetableOscillator:BufferOperation {
-    var length:UInt64
+    var length:UInt32
     private let volumeBuffer: VolumeBuffer
     private var toneSequence = Array<Note>()
 
@@ -156,7 +101,7 @@ class WavetableOscillator:BufferOperation {
     private var wavetableBuffer: AVAudioPCMBuffer?
     private var wavetableLength: Int = 0
 
-    init(length: UInt64) {
+    init(length: UInt32) {
         self.length = length
         self.volumeBuffer = VolumeBuffer.init(length: length)
     }
@@ -179,7 +124,7 @@ class WavetableOscillator:BufferOperation {
     }
 
     private func renderFrequencies() {
-        let sampleCount = UInt32(self.length * UInt64(SampleRate) / 1000)
+        let sampleCount = UInt32(self.length * UInt32(SampleRate) / 1000)
 
         self.frequencyBuffer = Helper().getBuffer(self.length)
 
@@ -215,7 +160,7 @@ class WavetableOscillator:BufferOperation {
     }
 
     func render(buffer:AVAudioPCMBuffer) -> Bool {
-        let sampleCount = Int(self.length * UInt64(SampleRate) / 1000)
+        let sampleCount = Int(self.length * UInt32(SampleRate) / 1000)
 
         if (wavetableLength == 0) {
             return false;
@@ -272,7 +217,7 @@ class WavetableOscillator:BufferOperation {
 
 class SinusOscillator:WavetableOscillator {
 
-    override init(length: UInt64) {
+    override init(length: UInt32) {
         super.init(length: length)
 
         let length = 4096
@@ -286,7 +231,7 @@ class SinusOscillator:WavetableOscillator {
 
 class SquareOscillator:WavetableOscillator {
 
-    override init(length: UInt64) {
+    override init(length: UInt32) {
         super.init(length: length)
 
         let length = 4096
@@ -304,7 +249,7 @@ class SquareOscillator:WavetableOscillator {
 
 class SawtoothOscillator:WavetableOscillator {
 
-    override init(length: UInt64) {
+    override init(length: UInt32) {
         super.init(length: length)
 
         let length = 4096

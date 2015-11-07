@@ -12,7 +12,7 @@ import AVFoundation
 class ViewController: NSViewController {
     @IBOutlet var textField:NSTextField?
     @IBOutlet var playButton:NSButton?
-    let parser = CommandParser()
+    let parser = Parser()
 
     let engine = AVAudioEngine()
     let player:AVAudioPlayerNode = AVAudioPlayerNode()

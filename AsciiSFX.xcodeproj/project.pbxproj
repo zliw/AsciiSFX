@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B374FEB1BEE689C0039B890 /* BufferOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B374FEA1BEE689C0039B890 /* BufferOperation.swift */; };
+		5B374FED1BEE693A0039B890 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B374FEC1BEE693A0039B890 /* Helper.swift */; };
 		5BC4EF0E1BD254460048E71A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF0D1BD254460048E71A /* AppDelegate.swift */; };
 		5BC4EF101BD254460048E71A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF0F1BD254460048E71A /* ViewController.swift */; };
 		5BC4EF121BD254460048E71A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BC4EF111BD254460048E71A /* Assets.xcassets */; };
 		5BC4EF151BD254460048E71A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BC4EF131BD254460048E71A /* Main.storyboard */; };
 		5BC4EF201BD254460048E71A /* AsciiSFXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF1F1BD254460048E71A /* AsciiSFXTests.swift */; };
-		5BC4EF2B1BD25A3A0048E71A /* CommandParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF2A1BD25A3A0048E71A /* CommandParser.swift */; };
+		5BC4EF2B1BD25A3A0048E71A /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF2A1BD25A3A0048E71A /* Parser.swift */; };
 		5BEB9BA41BE6364A00FF96B7 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB9BA31BE6364A00FF96B7 /* Note.swift */; };
 		5BEB9BA61BE6389C00FF96B7 /* Operations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB9BA51BE6389C00FF96B7 /* Operations.swift */; };
 /* End PBXBuildFile section */
@@ -28,6 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5B374FEA1BEE689C0039B890 /* BufferOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferOperation.swift; sourceTree = "<group>"; };
+		5B374FEC1BEE693A0039B890 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		5BC4EF0A1BD254460048E71A /* AsciiSFX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AsciiSFX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BC4EF0D1BD254460048E71A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5BC4EF0F1BD254460048E71A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -37,7 +41,7 @@
 		5BC4EF1B1BD254460048E71A /* AsciiSFXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsciiSFXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BC4EF1F1BD254460048E71A /* AsciiSFXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsciiSFXTests.swift; sourceTree = "<group>"; };
 		5BC4EF211BD254460048E71A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5BC4EF2A1BD25A3A0048E71A /* CommandParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandParser.swift; sourceTree = "<group>"; };
+		5BC4EF2A1BD25A3A0048E71A /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		5BEB9BA31BE6364A00FF96B7 /* Note.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		5BEB9BA51BE6389C00FF96B7 /* Operations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operations.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -60,6 +64,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5B374FE91BEE68530039B890 /* Audio Processing */ = {
+			isa = PBXGroup;
+			children = (
+				5B374FEA1BEE689C0039B890 /* BufferOperation.swift */,
+				5B374FEC1BEE693A0039B890 /* Helper.swift */,
+			);
+			name = "Audio Processing";
+			sourceTree = "<group>";
+		};
 		5BC4EF011BD254460048E71A = {
 			isa = PBXGroup;
 			children = (
@@ -81,8 +94,9 @@
 		5BC4EF0C1BD254460048E71A /* AsciiSFX */ = {
 			isa = PBXGroup;
 			children = (
+				5B374FE91BEE68530039B890 /* Audio Processing */,
 				5BC4EF0D1BD254460048E71A /* AppDelegate.swift */,
-				5BC4EF2A1BD25A3A0048E71A /* CommandParser.swift */,
+				5BC4EF2A1BD25A3A0048E71A /* Parser.swift */,
 				5BEB9BA51BE6389C00FF96B7 /* Operations.swift */,
 				5BEB9BA31BE6364A00FF96B7 /* Note.swift */,
 				5BC4EF0F1BD254460048E71A /* ViewController.swift */,
@@ -202,8 +216,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				5BC4EF101BD254460048E71A /* ViewController.swift in Sources */,
-				5BC4EF2B1BD25A3A0048E71A /* CommandParser.swift in Sources */,
+				5B374FED1BEE693A0039B890 /* Helper.swift in Sources */,
+				5BC4EF2B1BD25A3A0048E71A /* Parser.swift in Sources */,
 				5BC4EF0E1BD254460048E71A /* AppDelegate.swift in Sources */,
+				5B374FEB1BEE689C0039B890 /* BufferOperation.swift in Sources */,
 				5BEB9BA41BE6364A00FF96B7 /* Note.swift in Sources */,
 				5BEB9BA61BE6389C00FF96B7 /* Operations.swift in Sources */,
 			);
