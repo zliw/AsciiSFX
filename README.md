@@ -1,3 +1,5 @@
+![Build Status](https://api.travis-ci.org/zliw/AsciiSFX.svg)
+
 # AsciiSFX
 Toying around with the idea of a very small DSL to create sound effects
 
