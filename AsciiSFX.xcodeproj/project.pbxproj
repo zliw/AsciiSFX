@@ -16,6 +16,7 @@
 		5BC4EF151BD254460048E71A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BC4EF131BD254460048E71A /* Main.storyboard */; };
 		5BC4EF201BD254460048E71A /* AsciiSFXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF1F1BD254460048E71A /* AsciiSFXTests.swift */; };
 		5BC4EF2B1BD25A3A0048E71A /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF2A1BD25A3A0048E71A /* Parser.swift */; };
+		5BD33D731BEFB01C00361FF2 /* FrequencyBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD33D721BEFB01C00361FF2 /* FrequencyBuffer.swift */; };
 		5BEB9BA41BE6364A00FF96B7 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB9BA31BE6364A00FF96B7 /* Note.swift */; };
 		5BEB9BA61BE6389C00FF96B7 /* Oscillators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB9BA51BE6389C00FF96B7 /* Oscillators.swift */; };
 /* End PBXBuildFile section */
@@ -44,6 +45,7 @@
 		5BC4EF1F1BD254460048E71A /* AsciiSFXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsciiSFXTests.swift; sourceTree = "<group>"; };
 		5BC4EF211BD254460048E71A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5BC4EF2A1BD25A3A0048E71A /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		5BD33D721BEFB01C00361FF2 /* FrequencyBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrequencyBuffer.swift; sourceTree = "<group>"; };
 		5BEB9BA31BE6364A00FF96B7 /* Note.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		5BEB9BA51BE6389C00FF96B7 /* Oscillators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Oscillators.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -72,6 +74,7 @@
 				5B374FEA1BEE689C0039B890 /* BufferOperation.swift */,
 				5B374FEC1BEE693A0039B890 /* Helper.swift */,
 				5B374FEE1BEE6C5A0039B890 /* VolumeBuffer.swift */,
+				5BD33D721BEFB01C00361FF2 /* FrequencyBuffer.swift */,
 				5BEB9BA51BE6389C00FF96B7 /* Oscillators.swift */,
 			);
 			name = "Audio Processing";
@@ -221,6 +224,7 @@
 				5BC4EF101BD254460048E71A /* ViewController.swift in Sources */,
 				5B374FED1BEE693A0039B890 /* Helper.swift in Sources */,
 				5BC4EF2B1BD25A3A0048E71A /* Parser.swift in Sources */,
+				5BD33D731BEFB01C00361FF2 /* FrequencyBuffer.swift in Sources */,
 				5BC4EF0E1BD254460048E71A /* AppDelegate.swift in Sources */,
 				5B374FEB1BEE689C0039B890 /* BufferOperation.swift in Sources */,
 				5BEB9BA41BE6364A00FF96B7 /* Note.swift in Sources */,

@@ -10,7 +10,7 @@ import AVFoundation
 
 protocol BufferOperation {
     var length:UInt32 { get }
-    func setVolumeSequence(sequence:Array<Float>)
-    func setNoteSequence(sequence:Array<Note>)
+    func setVolumeBuffer(volumeBuffer:VolumeBuffer)
+    func setFrequencyBuffer(frequencyBuffer:FrequencyBuffer)
     func render(buffer:AVAudioPCMBuffer) ->Bool
 }

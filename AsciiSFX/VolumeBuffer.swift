@@ -8,20 +8,17 @@
 
 import AVFoundation
 
-let fadeSampleCount = UInt32(SampleRate / 200)   // 5ms
-
 class VolumeBuffer {
     private var length:UInt32
     var buffer: AVAudioPCMBuffer
     var sequence: Array<Float> = Array<Float>(arrayLiteral: 1.0, 1.0)
-    var isEmpty = true
 
     init(length: UInt32) {
         self.length = length
         self.buffer = Helper().getBuffer(length)
     }
 
-    func setSequence(sequence:Array<Float>) {
+    func setSequence(sequence: Array<Float>) {
         self.sequence = sequence
     }
 
@@ -43,7 +40,6 @@ class VolumeBuffer {
                 self.buffer.floatChannelData.memory[counter++] = volume
             }
         }
-        isEmpty = false
     }
 
     func reset() {
@@ -54,10 +50,9 @@ class VolumeBuffer {
         for (var i:Int = 0; i < Int(sampleCount); i++) {
             self.buffer.floatChannelData.memory[i] = Float(1)
         }
-        isEmpty = false
     }
 
-    func fadeIn(wantedStart:UInt32) {
+    func fadeInFrom(wantedStart:UInt32, lengthInSamples:UInt32) {
         let sampleCount = UInt32(self.length * UInt32(SampleRate) / 1000)
 
         if (wantedStart >= sampleCount) {
@@ -65,19 +60,18 @@ class VolumeBuffer {
         }
 
         let start:Int = Int(wantedStart)
-        let count:Int = (wantedStart + fadeSampleCount < sampleCount) ? Int(fadeSampleCount) : Int(sampleCount - wantedStart)
+        let count:Int = (wantedStart + lengthInSamples < sampleCount) ? Int(lengthInSamples) : Int(sampleCount - wantedStart)
 
         for (var i = 0; i < count; i++) {
             self.buffer.floatChannelData.memory[start +  i] *= (Float(i) / Float(count))
         }
-        isEmpty = false
     }
 
-    func fadeOut(wantedStart:UInt32) {
+    func fadeOutTo(wantedEnd:UInt32, lengthInSamples:UInt32) {
         let sampleCount = UInt32(self.length * UInt32(SampleRate) / 1000)
 
-        let start:Int = wantedStart > fadeSampleCount ? Int(wantedStart - fadeSampleCount) : 0
-        var count:Int = wantedStart > fadeSampleCount ? Int(fadeSampleCount) : Int(start)
+        let start:Int = wantedEnd > lengthInSamples ? Int(wantedEnd - lengthInSamples) : 0
+        var count:Int = wantedEnd > lengthInSamples ? Int(lengthInSamples) : Int(start)
 
         if (UInt32(start + count) > sampleCount) {
             count = Int(sampleCount - UInt32(start))
@@ -86,6 +80,5 @@ class VolumeBuffer {
         for (var i = 0; i < count; i++) {
             self.buffer.floatChannelData.memory[start +  i] *= Float(1) - (Float(i) / Float(count))
         }
-        isEmpty = false
     }
 }

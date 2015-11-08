@@ -178,8 +178,14 @@ class Parser {
                     continue
 
                 case "N":
+                    if operations.count == 0 {
+                        return false
+                    }
+                    let lastOperation = operations.last!
                     let (sequence, length) = parseNoteSequence(Array(chars[index ..< chars.count]))
-                    operations.last!.setNoteSequence(sequence)
+                    let frequencyBuffer = FrequencyBuffer(length: lastOperation.length)
+                    frequencyBuffer.setNoteSequence(sequence)
+                    operations.last!.setFrequencyBuffer(frequencyBuffer)
 
                     index += length
                     continue
@@ -189,9 +195,11 @@ class Parser {
                         return false
                     }
 
+                    let lastOperation = operations.last!
                     let (sequence, length) = parseHexSequence(Array(chars[index ..< chars.count]))
-
-                    operations.last!.setVolumeSequence(sequence)
+                    let volumeBuffer = VolumeBuffer(length:lastOperation.length)
+                    volumeBuffer.setSequence(sequence)
+                    operations.last!.setVolumeBuffer(volumeBuffer)
                     index += length
                     continue
 

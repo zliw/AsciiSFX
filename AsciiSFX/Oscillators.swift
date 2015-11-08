@@ -12,16 +12,15 @@ let SampleRate = Float(44100)
 
 class WavetableOscillator:BufferOperation {
     var length:UInt32
-    private let volumeBuffer: VolumeBuffer
-    private var toneSequence = Array<Note>()
 
-    private var frequencyBuffer: AVAudioPCMBuffer?
+    private var volumeBuffer: VolumeBuffer?
+    private var frequencyBuffer: FrequencyBuffer?
+
     private var wavetableBuffer: AVAudioPCMBuffer?
     private var wavetableLength: Int = 0
 
     init(length: UInt32) {
         self.length = length
-        self.volumeBuffer = VolumeBuffer.init(length: length)
     }
 
     // create a buffer with oscillations length of float samples
@@ -31,50 +30,12 @@ class WavetableOscillator:BufferOperation {
             frameCapacity:AVAudioFrameCount(sampleCount))
     }
 
-    func setVolumeSequence(sequence:Array<Float>) {
-        self.volumeBuffer.setSequence(sequence)
-        self.volumeBuffer.render()
-
-        // if there already is a frequencyBuffer, rerender it for fadein/out matches
-        if let _ = frequencyBuffer {
-            self.renderFrequencies()
-        }
+    func setFrequencyBuffer(frequencyBuffer:FrequencyBuffer) {
+        self.frequencyBuffer = frequencyBuffer
     }
 
-    private func renderFrequencies() {
-        let sampleCount = UInt32(self.length * UInt32(SampleRate) / 1000)
-
-        self.frequencyBuffer = Helper().getBuffer(self.length)
-
-        if (self.volumeBuffer.isEmpty) {
-            self.volumeBuffer.reset()
-        }
-
-        let sectionLength = Helper().lengthOfSections(sampleCount, sequence: self.toneSequence)
-
-        var counter = 0
-        for (var i = 0; i < sectionLength.count; i++) {
-            let length = sectionLength[i]
-            let start = self.toneSequence[i].frequency()
-            let end = self.toneSequence[i].toFrequency()
-            let diff = end - start
-
-            print(start, end, diff)
-
-            self.volumeBuffer.fadeIn(UInt32(counter))
-            self.volumeBuffer.fadeOut(UInt32(counter) + length)
-
-            for (var j:UInt32 = 0; j < length; j++) {
-                frequencyBuffer?.floatChannelData.memory[counter++] = start + (diff * Float(j) / Float(length))
-            }
-        }
-    }
-
-    func setNoteSequence(sequence:Array<Note>) {
-        self.toneSequence = sequence
-
-        self.volumeBuffer.render()
-        self.renderFrequencies()
+    func setVolumeBuffer(volumeBuffer:VolumeBuffer) {
+        self.volumeBuffer = volumeBuffer
     }
 
     func render(buffer:AVAudioPCMBuffer) -> Bool {
@@ -96,31 +57,24 @@ class WavetableOscillator:BufferOperation {
         let wavetable = wavetableBuffer!.floatChannelData.memory
 
         if let _ = frequencyBuffer {
-            let frequency = frequencyBuffer!.floatChannelData.memory
-            let volume = volumeBuffer.buffer.floatChannelData.memory
+            frequencyBuffer?.render()
+
+            let frequency = frequencyBuffer!.buffer.floatChannelData.memory
+            let volumes = frequencyBuffer!.volumeBuffer.buffer.floatChannelData.memory
             var phase:Float = 0.0
 
             for (var i = Int(0); i < sampleCount; i++) {
                 let freq = frequency[i]
                 phase += periodLength * freq / SampleRate
-                let value = volume[i] * wavetable[Int(phase) % wavetableLength]
-                buffer.floatChannelData.memory[i] = value
-                // second channel
-                buffer.floatChannelData.memory[sampleCount + i] = value
-            }
-        }
-        else if !volumeBuffer.isEmpty {
-            // fallback, fixed frequency of 440hz, using volume
-            let volume = volumeBuffer.buffer.floatChannelData.memory
-            for (var i = Int(0); i < sampleCount; i++) {
-                let value = (volume[i]) * wavetable[Int(Float(i) * periodLength * 440 / SampleRate) % wavetableLength]
+                let volume = volumes[i]
+                let value = volume * wavetable[Int(phase) % wavetableLength]
                 buffer.floatChannelData.memory[i] = value
                 // second channel
                 buffer.floatChannelData.memory[sampleCount + i] = value
             }
         }
         else {
-            // fallback -> fixed volume
+            // fallback -> fixed frequency
             for (var i = Int(0); i < sampleCount; i++) {
                 let value = wavetable[Int(Float(i) * periodLength * 440 / SampleRate) % wavetableLength]
                 buffer.floatChannelData.memory[i] = value
@@ -128,6 +82,18 @@ class WavetableOscillator:BufferOperation {
                 buffer.floatChannelData.memory[sampleCount + i] = value
             }
         }
+
+        if let _ = volumeBuffer {
+            volumeBuffer?.render()
+
+            let volumes = volumeBuffer!.buffer.floatChannelData.memory
+            // fallback, fixed frequency of 440hz, using volume
+            for (var i = Int(0); i < sampleCount; i++) {
+                buffer.floatChannelData.memory[i] *= volumes[i]
+                buffer.floatChannelData.memory[sampleCount + i] *= volumes[i]
+            }
+        }
+
 
         return false
     }
