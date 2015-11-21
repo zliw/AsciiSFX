@@ -118,7 +118,15 @@ class AsciiSFXTests: XCTestCase {
         assert(tone3.frequency() == 220)
     }
 
-    func testLengthOfSections() {
+    func testLengthOfSectionsWithASingleSection() {
+        var a = Array<UInt32>()
+        a.append(1)
+        let result = Helper().lengthOfSections(10, sequence: a)
+        assert(result.count == 1)
+        assert(result[0] == 10)
+    }
+
+    func testLengthOfSectionsWithNotes() {
         let t1 = Note(note:"a", octave: 5, length: 1)
 
         var a = Array<Note>()
