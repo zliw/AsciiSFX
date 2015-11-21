@@ -8,6 +8,7 @@
 
 import AVFoundation
 
+
 class Parser {
     var operations = Array<BufferOperation>()
     var frameCount:UInt64 = UInt64(SampleRate)
@@ -19,24 +20,35 @@ class Parser {
         return UInt(tmp[tmp.startIndex].value)
     }
 
-    internal func parseHexSequence(chars:Array<Character>) -> (Array<Float>, Int) {
-        var sequence = Array<Float>()
+    internal func parseHexSequence(chars:Array<Character>) -> (Array<VolumeSegment>, Int) {
+        var sequence = Array<VolumeSegment>()
         var index = 0
+        var segment: VolumeSegment?
 
         while (index < chars.count) {
             let code = getCharCode(chars[index])
 
             switch (code) {
                 case 0x30 ..< 0x40:         // 0 - 9
-                    sequence.append(Float(code - 0x30) / 15)
+                    if let _ = segment {
+                        sequence.append(segment!)
+                    }
+                    segment = VolumeSegment(from: Float(code - 0x30) / 15, to: nil)
                     index++
                     break
                 case 0x61 ..< 0x67:         // a-f
-                    sequence.append(Float(code - 0x61 + 10) / 15)
+                    if let _ = segment {
+                        sequence.append(segment!)
+                    }
+                    segment = VolumeSegment(from: Float(code - 0x61 + 10) / 15, to: nil)
                     index++
                 default:
                     return (sequence, index)
             }
+        }
+
+        if let _ = segment {
+            sequence.append(segment!)
         }
 
         return (sequence, index)

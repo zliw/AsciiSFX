@@ -8,17 +8,22 @@
 
 import AVFoundation
 
+struct VolumeSegment {
+    var from: Float
+    var to: Float?
+}
+
 class VolumeBuffer {
     private var length:UInt32
     var buffer: AVAudioPCMBuffer
-    var sequence: Array<Float> = Array<Float>(arrayLiteral: 1.0, 1.0)
+    var sequence: Array<VolumeSegment> = Array<VolumeSegment>(arrayLiteral: VolumeSegment(from: 1.0, to: 1.0))
 
     init(length: UInt32) {
         self.length = length
         self.buffer = Helper().getBuffer(length)
     }
 
-    func setSequence(sequence: Array<Float>) {
+    func setSequence(sequence: Array<VolumeSegment>) {
         self.sequence = sequence
     }
 
@@ -37,7 +42,7 @@ class VolumeBuffer {
             let volume = self.sequence[i]
 
             for (var j:UInt32 = 0; j < length; j++) {
-                self.buffer.floatChannelData.memory[counter++] = volume
+                self.buffer.floatChannelData.memory[counter++] = volume.from
             }
         }
     }
