@@ -41,8 +41,17 @@ class VolumeBuffer {
             let length = sectionLength[i]
             let volume = self.sequence[i]
 
-            for (var j:UInt32 = 0; j < length; j++) {
-                self.buffer.floatChannelData.memory[counter++] = volume.from
+            if let _ = volume.to {
+                let diff = volume.to! - volume.from
+
+                for (var j:UInt32 = 0; j < length; j++) {
+                    self.buffer.floatChannelData.memory[counter++] = volume.from + diff * Float(j) / Float(length)
+                }
+            }
+            else {
+                for (var j:UInt32 = 0; j < length; j++) {
+                    self.buffer.floatChannelData.memory[counter++] = volume.from
+                }
             }
         }
     }

@@ -24,32 +24,49 @@ class Parser {
         var sequence = Array<VolumeSegment>()
         var index = 0
         var segment: VolumeSegment?
+        var slide = false
 
         while (index < chars.count) {
             let code = getCharCode(chars[index])
+            var value:Float = -1
 
-            switch (code) {
-                case 0x30 ..< 0x40:         // 0 - 9
-                    if let _ = segment {
-                        sequence.append(segment!)
-                    }
-                    segment = VolumeSegment(from: Float(code - 0x30) / 15, to: nil)
+            switch (code, chars[index]) {
+                case (0x30 ..< 0x40, _):         // 0 - 9
+                    value = Float(code - 0x30) / 15
                     index++
                     break
-                case 0x61 ..< 0x67:         // a-f
-                    if let _ = segment {
-                        sequence.append(segment!)
-                    }
-                    segment = VolumeSegment(from: Float(code - 0x61 + 10) / 15, to: nil)
+                case (0x61 ..< 0x67, _):         // a-f
+                    value = Float(code - 0x61 + 10) / 15
                     index++
+                    break
+                case (_, "-"):
+                    slide = true
+                    index++
+                    break
                 default:
                     return (sequence, index)
             }
+
+            if (slide && value < 0) {
+                continue
+            }
+
+            if let _ = segment {
+                if slide {
+                    slide = false
+                    segment = VolumeSegment(from: segment!.from, to: value)
+                    continue
+                }
+                sequence.append(segment!)
+            }
+
+            segment = VolumeSegment(from: value, to: nil)
         }
 
         if let _ = segment {
             sequence.append(segment!)
         }
+
 
         return (sequence, index)
     }

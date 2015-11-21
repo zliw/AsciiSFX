@@ -54,6 +54,44 @@ class AsciiSFXTests: XCTestCase {
         assert(sequence[2].from == Float(1))
     }
 
+    func testParseHexSequenceRange() {
+        let chars = Array("0-f".characters)
+        let (sequence, index) = parser.parseHexSequence(chars)
+        assert(sequence.count == 1)
+        assert(index == 3)
+        assert(sequence[0].from == 0)
+        assert(sequence[0].to == Float(1))
+    }
+
+    func testParseHexSequenceRange2() {
+        let chars = Array("f-0".characters)
+        let (sequence, index) = parser.parseHexSequence(chars)
+        assert(sequence.count == 1)
+        assert(index == 3)
+        assert(sequence[0].from == Float(1))
+        assert(sequence[0].to == 0)
+    }
+
+    func testParseHexSequenceRange3() {
+        let chars = Array("0-f0-f".characters)
+        let (sequence, index) = parser.parseHexSequence(chars)
+        assert(sequence.count == 2)
+        assert(index == 6)
+        assert(sequence[0].from == 0)
+        assert(sequence[0].to == Float(1))
+        assert(sequence[1].from == 0)
+        assert(sequence[1].to == Float(1))
+    }
+
+    func testParseHexSequenceSingleValue() {
+        let chars = Array("0".characters)
+        let (sequence, index) = parser.parseHexSequence(chars)
+        assert(sequence.count == 1)
+        assert(index == 1)
+        assert(sequence[0].from == 0)
+        assert(sequence[0].to == nil)
+    }
+
     func testParseHexSequenceWithEmptyString() {
         let chars = Array("".characters)
         let (sequence, index) = parser.parseHexSequence(chars)
