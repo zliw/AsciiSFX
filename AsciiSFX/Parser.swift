@@ -10,8 +10,6 @@ import AVFoundation
 
 
 class Parser {
-    var frameCount:UInt64 = UInt64(SampleRate)
-
     internal func getCharCode(char:Character) ->UInt {
         //Swift string handling doesn't allow access to a Characters value directy -> convert back to string
         let tmp = String(char).unicodeScalars
@@ -202,8 +200,6 @@ class Parser {
                             return Array<BufferOperation>()
                     }
 
-                    self.frameCount = UInt64(length_in_ms) * UInt64(SampleRate) / 1000
-
                     index += length
                     continue
 
@@ -236,6 +232,10 @@ class Parser {
                 default:
                     return Array<BufferOperation>()
             }
+        }
+
+        if operations.count > 1 {
+            return Array<BufferOperation>(arrayLiteral: MixOperation(operations:operations))
         }
 
         return operations

@@ -11,12 +11,16 @@ import AVFoundation
 struct Helper {
     // creates a buffer according to length and samplerate
     func getBuffer(length: UInt32) -> AVAudioPCMBuffer {
+        return getBuffer(length, format: AVAudioFormat(standardFormatWithSampleRate: Double(SampleRate), channels: 1))
+    }
+
+    func getBuffer(length: UInt32, format: AVAudioFormat) -> AVAudioPCMBuffer {
         let sampleCount = UInt32(length * UInt32(SampleRate) / 1000)
 
-        return AVAudioPCMBuffer(PCMFormat: AVAudioFormat(standardFormatWithSampleRate: Double(SampleRate), channels: 1),
+        return AVAudioPCMBuffer(PCMFormat: format,
             frameCapacity:AVAudioFrameCount(sampleCount))
-
     }
+
 
     func lengthOfSections(totalLength:UInt32, sequence: Array<Note>) -> Array<UInt32> {
         return lengthOfSections(totalLength, sequence: sequence.map({ (tone) -> UInt32 in

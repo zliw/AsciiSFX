@@ -22,12 +22,18 @@ class ViewController: NSViewController {
 
         let mixer = engine.mainMixerNode
         engine.attachNode(player)
-        engine.connect(player, to:mixer, format:mixer.outputFormatForBus(0))
-        do {
-            try engine.start()
+
+        if mixer.outputFormatForBus(0).channelCount == 2 {
+            engine.connect(player, to:mixer, format:mixer.outputFormatForBus(0))
+            do {
+                try engine.start()
+            }
+            catch let error as NSError {
+                print(error.localizedDescription)
+            }
         }
-        catch let error as NSError {
-            print(error.localizedDescription)
+        else {
+            print("2 channel output required - aborting")
         }
     }
 
@@ -50,9 +56,9 @@ class ViewController: NSViewController {
                 AVSampleRateKey : NSNumber(double:format.sampleRate),
                 AVLinearPCMIsFloatKey: NSNumber(unsignedInt: 1)
                 ])
-            let buffer = AVAudioPCMBuffer(PCMFormat: format,
-                frameCapacity:AVAudioFrameCount(self.parser.frameCount))
-            buffer.frameLength = AVAudioFrameCount(self.parser.frameCount)
+            let frames = AVAudioFrameCount(UInt64(operations[0].length) * UInt64(SampleRate) / 1000)
+            let buffer = AVAudioPCMBuffer(PCMFormat: format, frameCapacity:frames)
+            buffer.frameLength = frames
 
             for operation in operations {
                 operation.render(buffer)
@@ -87,9 +93,9 @@ class ViewController: NSViewController {
             queue.addOperationWithBlock({
                 print("rendering")
 
-                let buffer = AVAudioPCMBuffer(PCMFormat: self.player.outputFormatForBus(0),
-                                          frameCapacity:AVAudioFrameCount(self.parser.frameCount))
-                buffer.frameLength = AVAudioFrameCount(self.parser.frameCount)
+                let frames = AVAudioFrameCount(UInt64(operations[0].length) * UInt64(SampleRate) / 1000)
+                let buffer = AVAudioPCMBuffer(PCMFormat: self.player.outputFormatForBus(0), frameCapacity:frames)
+                buffer.frameLength = frames
 
                 for operation in operations {
                     operation.render(buffer)

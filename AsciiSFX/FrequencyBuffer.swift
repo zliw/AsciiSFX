@@ -38,7 +38,7 @@ class FrequencyBuffer {
             self.volumeBuffer.fadeInFrom(UInt32(counter), lengthInSamples: fadeSampleCount)
             self.volumeBuffer.fadeOutTo(UInt32(counter) + length, lengthInSamples: fadeSampleCount)
 
-            let buffer = self.buffer.floatChannelData.memory
+            let buffer = self.buffer.floatChannelData[0]
             for (var j:UInt32 = 0; j < length; j++) {
                 buffer[counter++] = start + (diff * Float(j) / Float(length))
             }

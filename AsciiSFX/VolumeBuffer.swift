@@ -45,12 +45,12 @@ class VolumeBuffer {
                 let diff = volume.to! - volume.from
 
                 for (var j:UInt32 = 0; j < length; j++) {
-                    self.buffer.floatChannelData.memory[counter++] = volume.from + diff * Float(j) / Float(length)
+                    self.buffer.floatChannelData[0][counter++] = volume.from + diff * Float(j) / Float(length)
                 }
             }
             else {
                 for (var j:UInt32 = 0; j < length; j++) {
-                    self.buffer.floatChannelData.memory[counter++] = volume.from
+                    self.buffer.floatChannelData[0][counter++] = volume.from
                 }
             }
         }
@@ -62,7 +62,7 @@ class VolumeBuffer {
         self.buffer = Helper().getBuffer(self.length)
 
         for (var i:Int = 0; i < Int(sampleCount); i++) {
-            self.buffer.floatChannelData.memory[i] = Float(1)
+            self.buffer.floatChannelData[0][i] = Float(1)
         }
     }
 
@@ -77,7 +77,7 @@ class VolumeBuffer {
         let count:Int = (wantedStart + lengthInSamples < sampleCount) ? Int(lengthInSamples) : Int(sampleCount - wantedStart)
 
         for (var i = 0; i < count; i++) {
-            self.buffer.floatChannelData.memory[start +  i] *= (Float(i) / Float(count))
+            self.buffer.floatChannelData[0][start +  i] *= (Float(i) / Float(count))
         }
     }
 
@@ -92,7 +92,7 @@ class VolumeBuffer {
         }
 
         for (var i = 0; i < count; i++) {
-            self.buffer.floatChannelData.memory[start +  i] *= Float(1) - (Float(i) / Float(count))
+            self.buffer.floatChannelData[0][start +  i] *= Float(1) - (Float(i) / Float(count))
         }
     }
 }

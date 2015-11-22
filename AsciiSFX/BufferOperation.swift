@@ -9,7 +9,8 @@
 import AVFoundation
 
 protocol BufferOperation {
-    var length:UInt32 { get }
+    var length: UInt32 { get }
+    var isGenerator: Bool { get }
     func setVolumeBuffer(volumeBuffer:VolumeBuffer)
     func setFrequencyBuffer(frequencyBuffer:FrequencyBuffer)
     func render(buffer:AVAudioPCMBuffer) ->Bool

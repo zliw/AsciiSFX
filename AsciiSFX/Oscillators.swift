@@ -12,6 +12,7 @@ let SampleRate = Float(44100)
 
 class WavetableOscillator:BufferOperation {
     var length:UInt32
+    let isGenerator = true
 
     private var volumeBuffer: VolumeBuffer?
     private var frequencyBuffer: FrequencyBuffer?
@@ -49,6 +50,8 @@ class WavetableOscillator:BufferOperation {
             return false;
         }
 
+        print (buffer.frameCapacity)
+
         if (Int(buffer.frameCapacity) < sampleCount) {
             return false;
         }
@@ -59,8 +62,8 @@ class WavetableOscillator:BufferOperation {
         if let _ = frequencyBuffer {
             frequencyBuffer?.render()
 
-            let frequency = frequencyBuffer!.buffer.floatChannelData.memory
-            let volumes = frequencyBuffer!.volumeBuffer.buffer.floatChannelData.memory
+            let frequency = frequencyBuffer!.buffer.floatChannelData[0]
+            let volumes = frequencyBuffer!.volumeBuffer.buffer.floatChannelData[0]
             var phase:Float = 0.0
 
             for (var i = Int(0); i < sampleCount; i++) {
@@ -68,34 +71,33 @@ class WavetableOscillator:BufferOperation {
                 phase += periodLength * freq / SampleRate
                 let volume = volumes[i]
                 let value = volume * wavetable[Int(phase) % wavetableLength]
-                buffer.floatChannelData.memory[i] = value
+                buffer.floatChannelData[0][i] = value
                 // second channel
-                buffer.floatChannelData.memory[sampleCount + i] = value
+                buffer.floatChannelData[1][i] = value
             }
         }
         else {
             // fallback -> fixed frequency
             for (var i = Int(0); i < sampleCount; i++) {
                 let value = wavetable[Int(Float(i) * periodLength * 440 / SampleRate) % wavetableLength]
-                buffer.floatChannelData.memory[i] = value
+                buffer.floatChannelData[0][i] = value
                 // second channel
-                buffer.floatChannelData.memory[sampleCount + i] = value
+                buffer.floatChannelData[1][i] = value
             }
         }
 
         if let _ = volumeBuffer {
             volumeBuffer?.render()
 
-            let volumes = volumeBuffer!.buffer.floatChannelData.memory
+            let volumes = volumeBuffer!.buffer.floatChannelData[0]
             // fallback, fixed frequency of 440hz, using volume
             for (var i = Int(0); i < sampleCount; i++) {
-                buffer.floatChannelData.memory[i] *= volumes[i]
-                buffer.floatChannelData.memory[sampleCount + i] *= volumes[i]
+                buffer.floatChannelData[0][i] *= volumes[i]
+                buffer.floatChannelData[1][i] *= volumes[i]
             }
         }
 
-
-        return false
+        return true
     }
 }
 
