@@ -10,13 +10,14 @@ import Foundation
 
 struct FrequencyTable {
     static let table:Dictionary<Character, Float> = [
-        Character("c"):  261.63,
-        Character("d"):  293.66,
-        Character("e"):  329.63,
-        Character("f"):  349.23,
-        Character("g"):  392.00,
-        Character("a"):  440.00,
-        Character("b"):  493.88
+        Character("c"): 261.63,
+        Character("d"): 293.66,
+        Character("e"): 329.63,
+        Character("f"): 349.23,
+        Character("g"): 392.00,
+        Character("a"): 440.00,
+        Character("b"): 493.88,
+        Character("."): 0.0
     ]
 }
 

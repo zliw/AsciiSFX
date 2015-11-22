@@ -105,6 +105,8 @@ class Parser {
             case (_ , "f"):
                 fallthrough
             case (_ , "g"):
+                fallthrough
+            case (_ , "."):
 
                 if let _ = note {
                     if (slide) {
