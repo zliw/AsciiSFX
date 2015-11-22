@@ -9,10 +9,10 @@
 import AVFoundation
 
 class FrequencyBuffer {
-    var length:UInt32
+    var length: UInt32
     let buffer: AVAudioPCMBuffer
     var volumeBuffer: VolumeBuffer
-    private var toneSequence = Array<Note>()
+    private var noteSequence = Array<Note>()
     private let fadeSampleCount = UInt32(SampleRate / 200)   // 5ms
 
     init(length: UInt32) {
@@ -24,15 +24,15 @@ class FrequencyBuffer {
     func render() {
         let sampleCount = UInt32(self.length * UInt32(SampleRate) / 1000)
 
-        let sectionLength = Helper().lengthOfSections(sampleCount, sequence: self.toneSequence)
+        let sectionLength = Helper().lengthOfSections(sampleCount, sequence: self.noteSequence)
 
         self.volumeBuffer.render()
 
         var counter = 0
         for (var i = 0; i < sectionLength.count; i++) {
             let length = sectionLength[i]
-            let start = self.toneSequence[i].frequency()
-            let end = self.toneSequence[i].toFrequency()
+            let start = self.noteSequence[i].frequency()
+            let end = self.noteSequence[i].toFrequency()
             let diff = end - start
 
             self.volumeBuffer.fadeInFrom(UInt32(counter), lengthInSamples: fadeSampleCount)
@@ -46,7 +46,7 @@ class FrequencyBuffer {
     }
 
     func setNoteSequence(sequence:Array<Note>) {
-        self.toneSequence = sequence
+        self.noteSequence = sequence
         self.render()
     }
 }

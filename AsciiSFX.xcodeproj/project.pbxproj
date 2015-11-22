@@ -10,6 +10,7 @@
 		5B374FEB1BEE689C0039B890 /* BufferOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B374FEA1BEE689C0039B890 /* BufferOperation.swift */; };
 		5B374FED1BEE693A0039B890 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B374FEC1BEE693A0039B890 /* Helper.swift */; };
 		5B374FEF1BEE6C5A0039B890 /* VolumeBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B374FEE1BEE6C5A0039B890 /* VolumeBuffer.swift */; };
+		5B47852C1C0225F300971B06 /* FrequencyBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B47852B1C0225F300971B06 /* FrequencyBufferTests.swift */; };
 		5BC4EF0E1BD254460048E71A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF0D1BD254460048E71A /* AppDelegate.swift */; };
 		5BC4EF101BD254460048E71A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF0F1BD254460048E71A /* ViewController.swift */; };
 		5BC4EF121BD254460048E71A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BC4EF111BD254460048E71A /* Assets.xcassets */; };
@@ -35,6 +36,7 @@
 		5B374FEA1BEE689C0039B890 /* BufferOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferOperation.swift; sourceTree = "<group>"; };
 		5B374FEC1BEE693A0039B890 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		5B374FEE1BEE6C5A0039B890 /* VolumeBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VolumeBuffer.swift; sourceTree = "<group>"; };
+		5B47852B1C0225F300971B06 /* FrequencyBufferTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrequencyBufferTests.swift; sourceTree = "<group>"; };
 		5BC4EF0A1BD254460048E71A /* AsciiSFX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AsciiSFX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BC4EF0D1BD254460048E71A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5BC4EF0F1BD254460048E71A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				5BC4EF1F1BD254460048E71A /* AsciiSFXTests.swift */,
+				5B47852B1C0225F300971B06 /* FrequencyBufferTests.swift */,
 				5BC4EF211BD254460048E71A /* Info.plist */,
 			);
 			path = AsciiSFXTests;
@@ -237,6 +240,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B47852C1C0225F300971B06 /* FrequencyBufferTests.swift in Sources */,
 				5BC4EF201BD254460048E71A /* AsciiSFXTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
