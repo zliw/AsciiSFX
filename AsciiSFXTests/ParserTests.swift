@@ -147,28 +147,28 @@ class ParserTests: XCTestCase {
 
     func testParserWithSquareWave() {
         let parser = Parser()
-        parser.parse("SQ1000")
+        let operations = parser.parse("SQ1000")
         assert(parser.frameCount == 44100)
-        assert(parser.operations.count == 1)
-        let operation = parser.operations[0]
+        assert(operations.count == 1)
+        let operation = operations[0]
         assert(ObjectHelper.getClassName(operation as! AnyObject) == "AsciiSFX.SquareOscillator")
     }
 
     func testParserWithSineWave() {
         let parser = Parser()
-        parser.parse("SI100")
+        let operations = parser.parse("SI100")
         assert(parser.frameCount == 4410)
-        assert(parser.operations.count == 1)
-        let operation = parser.operations[0]
+        assert(operations.count == 1)
+        let operation = operations[0]
         assert(ObjectHelper.getClassName(operation as! AnyObject) == "AsciiSFX.SinusOscillator")
     }
 
     func testParserWithSawWave() {
         let parser = Parser()
-        parser.parse("SW100")
+        let operations = parser.parse("SW100")
         assert(parser.frameCount == 4410)
-        assert(parser.operations.count == 1)
-        let operation = parser.operations[0]
+        assert(operations.count == 1)
+        let operation = operations[0]
         assert(ObjectHelper.getClassName(operation as! AnyObject) == "AsciiSFX.SawtoothOscillator")
     }
 

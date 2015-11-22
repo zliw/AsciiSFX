@@ -10,9 +10,7 @@ import AVFoundation
 
 
 class Parser {
-    var operations = Array<BufferOperation>()
     var frameCount:UInt64 = UInt64(SampleRate)
-
 
     internal func getCharCode(char:Character) ->UInt {
         //Swift string handling doesn't allow access to a Characters value directy -> convert back to string
@@ -170,7 +168,8 @@ class Parser {
         return (value, index)
     }
 
-    func parse(command:String) -> Bool {
+    func parse(command:String) -> Array<BufferOperation> {
+        var operations = Array<BufferOperation>()
         let chars = Array(command.characters)
         var index = 0
 
@@ -180,7 +179,7 @@ class Parser {
             switch c {
                 case "S":
                     if (index >= chars.count - 1) {
-                        return false
+                        return Array<BufferOperation>()
                     }
 
                     let type = chars[index++]
@@ -189,18 +188,18 @@ class Parser {
 
                     // limit the length of generated signals to sensible values e.g. 20ms and 60s
                     if length_in_ms < 20 && length_in_ms > 60000 {
-                        return false
+                        return Array<BufferOperation>()
                     }
 
                     switch (type) {
                         case "I":
-                            self.operations.append(SinusOscillator(length: length_in_ms))
+                            operations.append(SinusOscillator(length: length_in_ms))
                         case "Q":
-                            self.operations.append(SquareOscillator(length: length_in_ms))
+                            operations.append(SquareOscillator(length: length_in_ms))
                         case "W":
-                            self.operations.append(SawtoothOscillator(length: length_in_ms))
+                            operations.append(SawtoothOscillator(length: length_in_ms))
                         default:
-                            return false
+                            return Array<BufferOperation>()
                     }
 
                     self.frameCount = UInt64(length_in_ms) * UInt64(SampleRate) / 1000
@@ -210,7 +209,7 @@ class Parser {
 
                 case "N":
                     if operations.count == 0 {
-                        return false
+                        return Array<BufferOperation>()
                     }
                     let lastOperation = operations.last!
                     let (sequence, length) = parseNoteSequence(Array(chars[index ..< chars.count]))
@@ -223,7 +222,7 @@ class Parser {
 
                 case "V":
                     if (operations.count == 0) {
-                        return false
+                        return Array<BufferOperation>()
                     }
 
                     let lastOperation = operations.last!
@@ -235,16 +234,10 @@ class Parser {
                     continue
 
                 default:
-                    return false
+                    return Array<BufferOperation>()
             }
         }
 
-        return true
-    }
-
-    func render(buffer: AVAudioPCMBuffer) {
-        for operation in self.operations {
-            operation.render(buffer)
-        }
+        return operations
     }
 }

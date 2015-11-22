@@ -32,7 +32,9 @@ class ViewController: NSViewController {
     }
 
     @IBAction func save(sender:NSObject?) {
-        if (!parse()) {
+        let operations = parse()
+
+        if (operations.count == 0) {
             let alert = NSAlert()
             alert.messageText = "parsing failed"
             alert.runModal()
@@ -52,7 +54,9 @@ class ViewController: NSViewController {
                 frameCapacity:AVAudioFrameCount(self.parser.frameCount))
             buffer.frameLength = AVAudioFrameCount(self.parser.frameCount)
 
-            self.parser.render(buffer)
+            for operation in operations {
+                operation.render(buffer)
+            }
 
             try file.writeFromBuffer(buffer)
         }
@@ -62,28 +66,34 @@ class ViewController: NSViewController {
         }
     }
 
-    func parse() -> Bool {
+    func parse() -> Array<BufferOperation> {
         let command = textField?.stringValue
+
         if ((command != nil && command?.lengthOfBytesUsingEncoding(NSASCIIStringEncoding) > 0)) {
             return parser.parse(command!)
         }
 
-        return false
+        return Array<BufferOperation>()
     }
 
     @IBAction func play(sender:NSObject?) {
-        if (parse()) {
+
+        let operations = parse()
+        if (operations.count > 0) {
             self.playButton?.enabled = false
 
             let queue = NSOperationQueue()
 
             queue.addOperationWithBlock({
                 print("rendering")
+
                 let buffer = AVAudioPCMBuffer(PCMFormat: self.player.outputFormatForBus(0),
                                           frameCapacity:AVAudioFrameCount(self.parser.frameCount))
                 buffer.frameLength = AVAudioFrameCount(self.parser.frameCount)
 
-                self.parser.render(buffer)
+                for operation in operations {
+                    operation.render(buffer)
+                }
 
                 print("scheduling")
                 self.player.scheduleBuffer(buffer,
