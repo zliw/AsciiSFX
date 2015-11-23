@@ -169,4 +169,12 @@ class ParserTests: XCTestCase {
         assert(ObjectHelper.getClassName(operation as! AnyObject) == "AsciiSFX.SawtoothOscillator")
     }
 
+    func testParserWithNoise() {
+        let parser = Parser()
+        let operations = parser.parse("SN100")
+        assert(operations.count == 1)
+        let operation = operations[0]
+        assert(ObjectHelper.getClassName(operation as! AnyObject) == "AsciiSFX.NoiseOscillator")
+    }
+
 }

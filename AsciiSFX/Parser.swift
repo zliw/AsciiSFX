@@ -196,6 +196,8 @@ class Parser {
                             operations.append(SquareOscillator(length: length_in_ms))
                         case "W":
                             operations.append(SawtoothOscillator(length: length_in_ms))
+                        case "N":
+                            operations.append(NoiseOscillator(length: length_in_ms))
                         default:
                             return Array<BufferOperation>()
                     }
