@@ -155,8 +155,8 @@ class NoiseOscillator:WavetableOscillator {
         let length = 2048
         wavetableBuffer = allocateWaveTable(UInt32(length))
 
-        for (var i:Int = 0; i < length / 2; i++) {
-            wavetableBuffer?.floatChannelData[0][i] = Float(arc4random()) / 0xFFFFFFFF
+        for (var i:Int = 0; i < length; i++) {
+            wavetableBuffer?.floatChannelData[0][i] = 2 * (Float(arc4random()) / 0xFFFFFFFF) - 1
         }
     }
 }
