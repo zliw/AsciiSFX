@@ -40,6 +40,10 @@ class Parser {
                     index++
                     break
                 default:
+                    if let _ = segment {
+                        sequence.append(segment!)
+                    }
+
                     return (sequence, index)
             }
 
@@ -62,7 +66,6 @@ class Parser {
         if let _ = segment {
             sequence.append(segment!)
         }
-
 
         return (sequence, index)
     }
@@ -212,6 +215,7 @@ class Parser {
                     let lastOperation = operations.last!
                     let (sequence, length) = parseNoteSequence(Array(chars[index ..< chars.count]))
                     let frequencyBuffer = FrequencyBuffer(length: lastOperation.length)
+
                     frequencyBuffer.setNoteSequence(sequence)
                     operations.last!.setFrequencyBuffer(frequencyBuffer)
 
@@ -227,7 +231,7 @@ class Parser {
                     let (sequence, length) = parseHexSequence(Array(chars[index ..< chars.count]))
                     let volumeBuffer = VolumeBuffer(length:lastOperation.length)
                     volumeBuffer.setSequence(sequence)
-                    operations.last!.setVolumeBuffer(volumeBuffer)
+                    lastOperation.setVolumeBuffer(volumeBuffer)
                     index += length
                     continue
 

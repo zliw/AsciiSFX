@@ -83,6 +83,15 @@ class ParserTests: XCTestCase {
         assert(sequence[1].to == Float(1))
     }
 
+    func testParseHexSequenceRange4() {
+        let chars = Array("0-fV".characters)
+        let (sequence, index) = parser.parseHexSequence(chars)
+        assert(sequence.count == 1)
+        assert(index == 3)
+        assert(sequence[0].from == 0)
+        assert(sequence[0].to == Float(1))
+    }
+
     func testParseHexSequenceSingleValue() {
         let chars = Array("0".characters)
         let (sequence, index) = parser.parseHexSequence(chars)
