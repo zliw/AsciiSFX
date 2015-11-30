@@ -131,6 +131,26 @@ class ParserTests: XCTestCase {
 
     }
 
+    func testParseIntegerPair() {
+        let chars = Array("1:2".characters)
+        let (pair, index) = parser.parseIntegerPair(chars)
+        assert(index == 2)
+
+        let (first, second) = pair
+        assert(first == 1)
+        assert(second == 2)
+    }
+
+    func testParseIntegerPair2() {
+        let chars = Array("01:02V".characters)
+        let (pair, index) = parser.parseIntegerPair(chars)
+        assert(index == 4)
+
+        let (first, second) = pair
+        assert(first == 1)
+        assert(second == 2)
+    }
+
     func testToneSequence() {
         let chars = Array("+d-d2.c".characters)
         let (sequence, index) = parser.parseNoteSequence(chars)

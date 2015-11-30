@@ -151,6 +151,16 @@ class Parser {
         return (sequence, index)
     }
 
+    internal func parseIntegerPair(chars:Array<Character>) -> ((UInt32, UInt32), Int) {
+        let (value, offset) = parseInteger(chars)
+        if offset < chars.count && chars[offset] == ":" {
+            let secondIntString = Array(chars[(offset + 1)...chars.count - 1])
+            let (value2, offset2) = parseInteger(secondIntString)
+            return ((value, value2), offset + offset2)
+        }
+        return ((value, 0), offset)
+    }
+
     internal func parseInteger(chars:Array<Character>) -> (UInt32, Int) {
         var index = 0
         var value:UInt32 = 0
