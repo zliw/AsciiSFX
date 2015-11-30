@@ -68,12 +68,19 @@ class WavetableOscillator:BufferOperation {
 
             for (var i = Int(0); i < sampleCount; i++) {
                 let freq = frequency[i]
-                phase += periodLength * freq / SampleRate
-                let volume = volumes[i]
-                let value = volume * wavetable[Int(phase) % wavetableLength]
-                buffer.floatChannelData[0][i] = value
-                // second channel
-                buffer.floatChannelData[1][i] = value
+                if freq == 0 {
+                    buffer.floatChannelData[0][i] = 0
+                    // second channel
+                    buffer.floatChannelData[1][i] = 0
+                }
+                else {
+                    phase += periodLength * freq / SampleRate
+                    let volume = volumes[i]
+                    let value = volume * wavetable[Int(phase) % wavetableLength]
+                    buffer.floatChannelData[0][i] = value
+                    // second channel
+                    buffer.floatChannelData[1][i] = value
+                }
             }
         }
         else {

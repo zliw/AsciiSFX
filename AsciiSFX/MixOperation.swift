@@ -15,7 +15,7 @@
 import AVFoundation
 
 class MixOperation:BufferOperation {
-    private var operations =  Array<BufferOperation>()
+    var operations =  Array<BufferOperation>()
     let isGenerator = true
 
     var length: UInt32 {

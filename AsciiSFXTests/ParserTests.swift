@@ -134,7 +134,7 @@ class ParserTests: XCTestCase {
     func testParseIntegerPair() {
         let chars = Array("1:2".characters)
         let (pair, index) = parser.parseIntegerPair(chars)
-        assert(index == 2)
+        assert(index == 3)
 
         let (first, second) = pair
         assert(first == 1)
@@ -144,11 +144,18 @@ class ParserTests: XCTestCase {
     func testParseIntegerPair2() {
         let chars = Array("01:02V".characters)
         let (pair, index) = parser.parseIntegerPair(chars)
-        assert(index == 4)
+        assert(index == 5)
 
         let (first, second) = pair
         assert(first == 1)
         assert(second == 2)
+    }
+
+    func testParseDelay() {
+        let operations = parser.parse("SI100D10:50")
+        assert(operations.count == 1)
+        let mix = operations[0] as! MixOperation
+        assert(mix.operations.count == 2)
     }
 
     func testToneSequence() {

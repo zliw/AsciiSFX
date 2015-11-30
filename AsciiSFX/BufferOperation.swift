@@ -13,5 +13,5 @@ protocol BufferOperation {
     var isGenerator: Bool { get }
     func setVolumeBuffer(volumeBuffer:VolumeBuffer)
     func setFrequencyBuffer(frequencyBuffer:FrequencyBuffer)
-    func render(buffer:AVAudioPCMBuffer) ->Bool
+    func render(buffer:AVAudioPCMBuffer) -> Bool
 }

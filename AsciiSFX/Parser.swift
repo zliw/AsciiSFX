@@ -156,7 +156,7 @@ class Parser {
         if offset < chars.count && chars[offset] == ":" {
             let secondIntString = Array(chars[(offset + 1)...chars.count - 1])
             let (value2, offset2) = parseInteger(secondIntString)
-            return ((value, value2), offset + offset2)
+            return ((value, value2), offset + offset2 + 1)
         }
         return ((value, 0), offset)
     }
@@ -215,6 +215,16 @@ class Parser {
                             return Array<BufferOperation>()
                     }
 
+                    index += length
+                    continue
+
+                case "D":
+                    if (operations.count == 0) {
+                        return Array<BufferOperation>()
+                    }
+                    let ((delay, level), length) = parseIntegerPair(Array(chars[index ..< chars.count]))
+                    let delayOperation = DelayOperation(length: operations.last!.length, delay:delay, level:level)
+                    operations.append(delayOperation)
                     index += length
                     continue
 
