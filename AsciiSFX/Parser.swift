@@ -218,6 +218,15 @@ class Parser {
                     index += length
                     continue
 
+                case "L":
+                    if (operations.count == 0) {
+                        return Array<BufferOperation>()
+                    }
+                    let filterOp = LowPassFilterOperation(length: operations.last!.length)
+                    operations.append(filterOp)
+                    index += 1
+                    continue
+
                 case "D":
                     if (operations.count == 0) {
                         return Array<BufferOperation>()

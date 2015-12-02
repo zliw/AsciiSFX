@@ -21,6 +21,7 @@
 		5BC4EF2B1BD25A3A0048E71A /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF2A1BD25A3A0048E71A /* Parser.swift */; };
 		5BD33D731BEFB01C00361FF2 /* FrequencyBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD33D721BEFB01C00361FF2 /* FrequencyBuffer.swift */; };
 		5BD90A2D1C0CF27700E7AFDF /* DelayOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD90A2C1C0CF27700E7AFDF /* DelayOperation.swift */; };
+		5BDE90331C0E51C00075F12B /* FilterBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDE90321C0E51C00075F12B /* FilterBuffer.swift */; };
 		5BEB9BA41BE6364A00FF96B7 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB9BA31BE6364A00FF96B7 /* Note.swift */; };
 		5BEB9BA61BE6389C00FF96B7 /* Oscillators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB9BA51BE6389C00FF96B7 /* Oscillators.swift */; };
 /* End PBXBuildFile section */
@@ -54,6 +55,7 @@
 		5BC4EF2A1BD25A3A0048E71A /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		5BD33D721BEFB01C00361FF2 /* FrequencyBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrequencyBuffer.swift; sourceTree = "<group>"; };
 		5BD90A2C1C0CF27700E7AFDF /* DelayOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DelayOperation.swift; sourceTree = "<group>"; };
+		5BDE90321C0E51C00075F12B /* FilterBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterBuffer.swift; sourceTree = "<group>"; };
 		5BEB9BA31BE6364A00FF96B7 /* Note.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		5BEB9BA51BE6389C00FF96B7 /* Oscillators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Oscillators.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -86,6 +88,7 @@
 				5BEB9BA51BE6389C00FF96B7 /* Oscillators.swift */,
 				5BD90A2C1C0CF27700E7AFDF /* DelayOperation.swift */,
 				5B69E0921C0250C50013CB4D /* MixOperation.swift */,
+				5BDE90321C0E51C00075F12B /* FilterBuffer.swift */,
 			);
 			name = "Audio Processing";
 			sourceTree = "<group>";
@@ -242,6 +245,7 @@
 				5B374FEB1BEE689C0039B890 /* BufferOperation.swift in Sources */,
 				5BEB9BA41BE6364A00FF96B7 /* Note.swift in Sources */,
 				5BD90A2D1C0CF27700E7AFDF /* DelayOperation.swift in Sources */,
+				5BDE90331C0E51C00075F12B /* FilterBuffer.swift in Sources */,
 				5BEB9BA61BE6389C00FF96B7 /* Oscillators.swift in Sources */,
 				5B374FEF1BEE6C5A0039B890 /* VolumeBuffer.swift in Sources */,
 			);
