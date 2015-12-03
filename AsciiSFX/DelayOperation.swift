@@ -9,15 +9,17 @@
 import AVFoundation
 
 class DelayOperation:BufferOperation {
-    var delay = UInt32(0)
-    var level = UInt32(0)
-    var length = UInt32(0)
+    let delay:UInt32
+    let level:UInt32
+    let length:UInt32
+    let parameterLength:UInt32
     let isGenerator = false
 
     init(length: UInt32, delay:UInt32 ,level: UInt32) {
         self.level = level
         self.delay = delay
         self.length = length
+        self.parameterLength = length / 256
     }
 
     func setVolumeBuffer(volumeBuffer:VolumeBuffer) {

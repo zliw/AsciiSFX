@@ -12,11 +12,13 @@ import AVFoundation
 let π = Float(3.1415296)
 
 class LowPassFilterOperation:BufferOperation {
-    var length = UInt32(0)
+    let length:UInt32
+    let parameterLength:UInt32
     let isGenerator = false
 
     init(length: UInt32) {
         self.length = length
+        self.parameterLength = length / 16
     }
 
     func setVolumeBuffer(volumeBuffer:VolumeBuffer) {

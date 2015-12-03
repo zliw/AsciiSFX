@@ -27,6 +27,15 @@ class MixOperation:BufferOperation {
         }
     }
 
+    var parameterLength: UInt32 {
+        get {
+            if (operations.count == 0) {
+                return 0
+            }
+            return operations.last!.parameterLength
+        }
+    }
+
     init(operations: Array<BufferOperation>) {
         self.operations = operations
     }

@@ -11,7 +11,8 @@ import AVFoundation
 let SampleRate = Float(44100)
 
 class WavetableOscillator:BufferOperation {
-    var length:UInt32
+    let length:UInt32
+    let parameterLength:UInt32
     let isGenerator = true
 
     private var volumeBuffer: VolumeBuffer?
@@ -22,6 +23,7 @@ class WavetableOscillator:BufferOperation {
 
     init(length: UInt32) {
         self.length = length
+        self.parameterLength = length
     }
 
     // create a buffer with oscillations length of float samples
