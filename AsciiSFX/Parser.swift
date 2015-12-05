@@ -224,7 +224,6 @@ class Parser {
                     }
                     let filterOp = LowPassFilterOperation(length: operations.last!.length)
                     operations.append(filterOp)
-                    index += 1
                     continue
 
                 case "D":

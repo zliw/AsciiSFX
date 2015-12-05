@@ -28,6 +28,12 @@ struct Note {
     var toNote:Character?
     var toOctave:UInt8?
 
+    init(note:Character, octave: UInt8) {
+        self.note = note
+        self.octave = octave
+        self.length = 1
+    }
+
     init(note:Character, octave: UInt8, length: UInt8) {
         self.note = note
         self.octave = octave
