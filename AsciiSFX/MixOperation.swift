@@ -40,18 +40,6 @@ class MixOperation:BufferOperation {
         self.operations = operations
     }
 
-    func setFrequencyBuffer(frequencyBuffer:FrequencyBuffer) {
-        if operations.count > 0 {
-            operations.last!.setFrequencyBuffer(frequencyBuffer)
-        }
-    }
-
-    func setVolumeBuffer(volumeBuffer:VolumeBuffer) {
-        if operations.count > 0 {
-            operations.last!.setVolumeBuffer(volumeBuffer)
-        }
-    }
-
     private func mix(buffer:AVAudioPCMBuffer, other:AVAudioPCMBuffer, volume:Float, volume2:Float) {
         let sampleCount = Int(self.length * UInt32(SampleRate) / 1000)
 
@@ -66,7 +54,7 @@ class MixOperation:BufferOperation {
         }
     }
 
-    func render(buffer:AVAudioPCMBuffer) -> Bool {
+    func render(buffer: AVAudioPCMBuffer) -> Bool {
         let generators = operations.filter({ $0.isGenerator })
 
         //premature optimization -> one buffer doesn't need mixing

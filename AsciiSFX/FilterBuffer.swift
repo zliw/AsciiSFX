@@ -11,9 +11,9 @@ import AVFoundation
 
 let π = Float(3.1415296)
 
-class LowPassFilterOperation:BufferOperation {
-    let length:UInt32
-    let parameterLength:UInt32
+class LowPassFilterOperation: BufferOperation {
+    let length: UInt32
+    let parameterLength: UInt32
     let isGenerator = false
     let ratio = 16
     var volumeBuffer:VolumeBuffer
@@ -23,17 +23,10 @@ class LowPassFilterOperation:BufferOperation {
         self.length = length
         self.parameterLength = 1 + length / UInt32(ratio)
         self.volumeBuffer = VolumeBuffer(length:parameterLength)
-        self.volumeBuffer.setSequence([VolumeSegment(from:0.25, to: 0.25)])
-        self.frequencyBuffer = FrequencyBuffer(length:parameterLength)
-        self.frequencyBuffer.setNoteSequence([Note(note: "a", octave: 4), Note(note: "a", octave: 4)])
-    }
 
-    func setVolumeBuffer(volumeBuffer:VolumeBuffer) {
-        self.volumeBuffer = volumeBuffer
-    }
-
-    func setFrequencyBuffer(frequencyBuffer:FrequencyBuffer) {
-        self.frequencyBuffer = frequencyBuffer
+        // preset for now
+        self.volumeBuffer.setSequence([VolumeSegment(from: 0.25, to: 0.25)])
+        self.frequencyBuffer = FrequencyBuffer(length: parameterLength, sequence: [Note(note: "a", octave: 4), Note(note: "a", octave: 4)])
     }
 
     func render(buffer:AVAudioPCMBuffer) -> Bool {

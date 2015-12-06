@@ -201,21 +201,27 @@ class Parser {
                     if length_in_ms < 20 && length_in_ms > 60000 {
                         return Array<BufferOperation>()
                     }
+                    index += length
 
                     switch (type) {
                         case "I":
-                            operations.append(SinusOscillator(length: length_in_ms))
+                            let (sequence, length) = parseNoteSequence(Array(chars[index ..< chars.count]))
+                            index += length
+                            operations.append(SinusOscillator(length: length_in_ms, sequence: sequence))
                         case "Q":
-                            operations.append(SquareOscillator(length: length_in_ms))
+                            let (sequence, length) = parseNoteSequence(Array(chars[index ..< chars.count]))
+                            index += length
+                            operations.append(SquareOscillator(length: length_in_ms, sequence: sequence))
                         case "W":
-                            operations.append(SawtoothOscillator(length: length_in_ms))
+                            let (sequence, length) = parseNoteSequence(Array(chars[index ..< chars.count]))
+                            index += length
+                            operations.append(SawtoothOscillator(length: length_in_ms, sequence: sequence))
                         case "N":
-                            operations.append(NoiseOscillator(length: length_in_ms))
+                            operations.append(NoiseOscillator(length: length_in_ms, sequence: Array<Note>()))
                         default:
                             return Array<BufferOperation>()
                     }
 
-                    index += length
                     continue
 
                 case "L":
@@ -236,20 +242,6 @@ class Parser {
                     index += length
                     continue
 
-                case "N":
-                    if operations.count == 0 {
-                        return Array<BufferOperation>()
-                    }
-                    let lastOperation = operations.last!
-                    let (sequence, length) = parseNoteSequence(Array(chars[index ..< chars.count]))
-                    let frequencyBuffer = FrequencyBuffer(length: lastOperation.parameterLength)
-
-                    frequencyBuffer.setNoteSequence(sequence)
-                    operations.last!.setFrequencyBuffer(frequencyBuffer)
-
-                    index += length
-                    continue
-
                 case "V":
                     if (operations.count == 0) {
                         return Array<BufferOperation>()
@@ -257,9 +249,8 @@ class Parser {
 
                     let lastOperation = operations.last!
                     let (sequence, length) = parseHexSequence(Array(chars[index ..< chars.count]))
-                    let volumeBuffer = VolumeBuffer(length:lastOperation.parameterLength)
-                    volumeBuffer.setSequence(sequence)
-                    lastOperation.setVolumeBuffer(volumeBuffer)
+                    let volumeOperation = VolumeOperation(length:lastOperation.parameterLength, sequence: sequence)
+                    operations.append(volumeOperation)
                     index += length
                     continue
 

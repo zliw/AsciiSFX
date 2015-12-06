@@ -13,6 +13,7 @@
 		5B47852C1C0225F300971B06 /* FrequencyBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B47852B1C0225F300971B06 /* FrequencyBufferTests.swift */; };
 		5B47852E1C022AA100971B06 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B47852D1C022AA100971B06 /* ParserTests.swift */; };
 		5B69E0931C0250C50013CB4D /* MixOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B69E0921C0250C50013CB4D /* MixOperation.swift */; };
+		5B7F02B01C14CB0B00153A51 /* VolumeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7F02AF1C14CB0B00153A51 /* VolumeOperation.swift */; };
 		5BC4EF0E1BD254460048E71A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF0D1BD254460048E71A /* AppDelegate.swift */; };
 		5BC4EF101BD254460048E71A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4EF0F1BD254460048E71A /* ViewController.swift */; };
 		5BC4EF121BD254460048E71A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BC4EF111BD254460048E71A /* Assets.xcassets */; };
@@ -43,6 +44,7 @@
 		5B47852B1C0225F300971B06 /* FrequencyBufferTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrequencyBufferTests.swift; sourceTree = "<group>"; };
 		5B47852D1C022AA100971B06 /* ParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
 		5B69E0921C0250C50013CB4D /* MixOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixOperation.swift; sourceTree = "<group>"; };
+		5B7F02AF1C14CB0B00153A51 /* VolumeOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VolumeOperation.swift; sourceTree = "<group>"; };
 		5BC4EF0A1BD254460048E71A /* AsciiSFX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AsciiSFX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BC4EF0D1BD254460048E71A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5BC4EF0F1BD254460048E71A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 				5B374FEA1BEE689C0039B890 /* BufferOperation.swift */,
 				5B374FEC1BEE693A0039B890 /* Helper.swift */,
 				5B374FEE1BEE6C5A0039B890 /* VolumeBuffer.swift */,
+				5B7F02AF1C14CB0B00153A51 /* VolumeOperation.swift */,
 				5BD33D721BEFB01C00361FF2 /* FrequencyBuffer.swift */,
 				5BEB9BA51BE6389C00FF96B7 /* Oscillators.swift */,
 				5BD90A2C1C0CF27700E7AFDF /* DelayOperation.swift */,
@@ -240,6 +243,7 @@
 				5B374FED1BEE693A0039B890 /* Helper.swift in Sources */,
 				5B69E0931C0250C50013CB4D /* MixOperation.swift in Sources */,
 				5BC4EF2B1BD25A3A0048E71A /* Parser.swift in Sources */,
+				5B7F02B01C14CB0B00153A51 /* VolumeOperation.swift in Sources */,
 				5BD33D731BEFB01C00361FF2 /* FrequencyBuffer.swift in Sources */,
 				5BC4EF0E1BD254460048E71A /* AppDelegate.swift in Sources */,
 				5B374FEB1BEE689C0039B890 /* BufferOperation.swift in Sources */,

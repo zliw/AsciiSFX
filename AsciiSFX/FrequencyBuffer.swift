@@ -15,10 +15,12 @@ class FrequencyBuffer {
     private var noteSequence = Array<Note>()
     private let fadeSampleCount = UInt32(SampleRate / 200)   // 5ms
 
-    init(length: UInt32) {
+    init(length: UInt32, sequence:Array<Note>) {
         self.length = length
         self.buffer = Helper().getBuffer(length)
         self.volumeBuffer = VolumeBuffer(length: length)
+        self.noteSequence = sequence
+        self.render()
     }
 
     func render() {
@@ -45,9 +47,5 @@ class FrequencyBuffer {
         }
     }
 
-    func setNoteSequence(sequence:Array<Note>) {
-        self.noteSequence = sequence
-        self.render()
-    }
 }
 

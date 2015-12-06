@@ -22,12 +22,6 @@ class DelayOperation:BufferOperation {
         self.parameterLength = length / 256
     }
 
-    func setVolumeBuffer(volumeBuffer:VolumeBuffer) {
-    }
-
-    func setFrequencyBuffer(frequencyBuffer:FrequencyBuffer) {
-    }
-
     func render(buffer:AVAudioPCMBuffer) -> Bool {
         let cl = buffer.floatChannelData[0]
         let cr = buffer.floatChannelData[1]
